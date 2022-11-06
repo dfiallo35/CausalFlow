@@ -25,7 +25,7 @@ def links(matrix):
                 if matrix[i, j, a] == 1:
                     print(i, j, a)
 
-links(link_matrix)
+# links(link_matrix)
 
 
 def make_list(input_matrix):
