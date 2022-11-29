@@ -53,15 +53,9 @@ def pyvis_graph(G: Graph):
                         spring_length=50, spring_strength=0.20,
                         damping=0.2)
 
-    # Save and read graph as HTML file (on Streamlit Sharing)
-    net.save_graph('pyvis_graph.html')
-    # net.save_graph
-    HtmlFile = open(join(getcwd(), 'pyvis_graph.html'), 'r', encoding='utf-8')
-    HtmlFiletext = HtmlFile.read()
-    HtmlFile.close()
 
     # Load HTML file in HTML component for display on Streamlit page
-    components.html(HtmlFiletext, height=610)
+    components.html(net.generate_html(), height=610)
 
 
 
@@ -113,8 +107,7 @@ def graphviz_plott():
 initial_text()
 file, option= sidebar()
 
-# Define function to create network graph
-G= make_graph(file)
-
-pyvis_graph(G)
-matplot_graph(G, option)
+if file:
+    G= make_graph(file)
+    pyvis_graph(G)
+    matplot_graph(G, option)
