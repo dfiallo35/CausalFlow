@@ -2,6 +2,8 @@
 import networkx as nx
 from networkx import Graph
 
+import gravis as gv
+
 # pyvis
 from pyvis.network import Network
 
@@ -23,7 +25,9 @@ from os.path import join
 from scipy.io import loadmat
 import numpy as np
 
+import random
 
+#TODO: fix the color of the edges to reduce the limit
 
 def remove_not_linked_nodes(G: Graph):
     '''
@@ -39,41 +43,173 @@ def remove_not_linked_nodes(G: Graph):
     G.remove_nodes_from(to_remove)
 
 
-def generate_graph(matrix: np.ndarray, n: int, directed: bool):
-    '''
-    Generate a graph with networkx from a matrix of links
-    '''
-    ...
 
-def generate_graph_directed(): ...
+def get_data_linkLag(datalink, dataval):
+    '''
+    Create a dictionary from two lists
+    :param datalink: List of links
+    :type datalink: list
+    :param dataval: List of values
+    :type dataval: list
+    :return: Dictionary
+    :rtype: dict
+    '''
+    rowcount=0
+    newdata= dict()
+
+    for row in datalink:
+        rowcount+=1
+        columncount=0
+
+        for column in row:
+            columncount+=1
+
+            if column != 0:
+                if newdata.get(rowcount):
+                    newdata[rowcount][columncount]= dataval[rowcount-1][columncount-1]
+                else:
+                    newdata[rowcount] = {columncount: dataval[rowcount-1][columncount-1]}
+
+    return newdata
+
+
+
+def load_dict(file: str, linkLag: str, valLag: str):
+    """
+    Load a dictionary from a .mat file
+    :param file: Path to the .mat file
+    :type file: str
+    :param linkLag: Name of the dictionary in the .mat file
+    :type linkLag: str
+    :param valLag: Name of the dictionary in the .mat file
+    :type valLag: str
+    :return: Dictionary
+    :rtype: dict
+    """
+    data = loadmat(file)
+    datalink = []
+
+    for i in data[linkLag]:
+        temp=[]
+        for j in i:
+            temp.append(j)
+        datalink.append(temp)
     
+    dataval = []
+    for i in data[valLag]:
+        temp=[]
+        for j in i:
+            temp.append(round(j, 4))
+        dataval.append(temp)
+
+    return get_data_linkLag(datalink, dataval)
 
 
+def make_directed_graph(file):
+    G= nx.DiGraph()
+    vallag_list= []
+    for i in loadmat(file):
+        if i[:len(i)-1] == 'vallag' and i != 'vallag0':
+            vallag_list.append(i)
+    vallag_list.sort()
+    print(vallag_list)
+    
+    # linkl= load_dict(file, 'linkLag0', 'vallag0')
 
 
+def make_graph_lag0(file: str):
+    '''
+    Create a graph from a .mat file
+    :param file: Path to the .mat file
+    :type file: str
+    :return: Graph
+    :rtype: Graph
+    '''
+    G:Graph= Graph()
+    linkl= load_dict(file, 'linkLag0', 'vallag0')
 
-
-
-
-    link_matrix[:, :, 0] = data['linkLag0']
-    link_matrix[:, :, 1] = data['linkLag1']
-    link_matrix[:, :, 2] = data['linkLag2']
-
-    return link_matrix, val_matrix
-
-
-
+    for node in linkl:
+        G.add_node(node, label= str(node), title= str(node))
+        for xnode in linkl[node]:
+            G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode]))
     return G
 
 
 
+def make_separated_graphs(G: Graph):
+    '''
+    Separate the graph G in subgraphs and return a list of graphs
+    :param G: Graph created with networkx
+    :type G: Graph
+    :return: List of subgraphs
+    :rtype: list
+    '''
+    Glist = separate_graphs(G)
+    biggest_graph: Graph = find_biggest_graph(Glist)
+    if biggest_graph.number_of_nodes() > G.number_of_nodes() / 2:
+        for graph in Glist:
+            if graph == biggest_graph:
+                Glist.remove(graph)
+        Gnew= merge_graphs(Glist)
+        return [biggest_graph, Gnew]
+    
+    return G
 
 
 
+def separate_graphs(G: Graph):
+    '''
+    Separate the graph G in subgraphs
+    :param G: Graph created with networkx
+    :type G: Graph
+    :return: List of subgraphs
+    :rtype: list
+    '''
+    return [G.subgraph(c).copy() for c in nx.connected_components(G)]
 
-    return linklag0
 
 
+def merge_graphs(Glist: list):
+    '''
+    Merge a list of graphs into one graph
+    :param Gs: List of graphs
+    :type Gs: list
+    :return: Graph
+    :rtype: Graph
+    '''
+    G = nx.Graph()
+    for g in Glist:
+        G = nx.compose(G, g)
+    return G
+
+
+
+def find_biggest_graph(Glist: list):
+    '''
+    Find the biggest graph in a list of graphs
+    :param Gs: List of graphs
+    :type Gs: list
+    :return: Graph
+    :rtype: Graph
+    '''
+    Glist.sort(key=lambda x: len(x.nodes), reverse=True)
+    return Glist[0]
+
+
+
+def to_hexa_rgb(number: int):
+    '''
+    Convert a number to a hexa color
+    :param number: Number to convert
+    :type number: int
+    :return: Hexa color
+    :rtype: str
+    '''
+    n= str(hex(int((abs(number) * 230) + 25)))[2:]
+    if number >= 0:
+        return '#' + n + '0000'
+    else:
+        return '#' + '00' + n + '00'
 
 
 
