@@ -10,24 +10,16 @@ import streamlit.components.v1 as components
 
 
 
-#TODO: fix the color of the edges to reduce the limit
-#TODO: add a legend of the colors
-#TODO: add a legend of the nodes(nodes names)
-#TODO: separate the directed graph in subgraphs
-#TODO: compacted graph
-
-def remove_not_linked_nodes(G: Graph):
-    '''
-    Remove nodes that are not linked to any other node 
-    in the graph G created with networkx
-    :param G: Graph created with networkx
-    :type G: Graph
-    '''
-    to_remove=[]
-    for node in G.nodes:
-        if len(G.edges(node)) == 0:
-            to_remove.append(node)
-    G.remove_nodes_from(to_remove)
+#TODO: ajustar el colormap a los minimos y maximos de los lags
+#TODO: arreglar la escala de colores de to_hexa_rgb
+#TODO: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
+#TODO: agregarle nombre a los nodos
+#TODO: separar el grafo dirigido en subgrafos(el no dirigido ya está separado, pero esa funcion no es valida para los dirigidos)
+#TODO: compactar el grafo para que sea mas legible
+#TODO: ajustar el gravis_vis para que se vea bien en streamlit
+#TODO: ajustar gravis three para que se vea bien en streamlit
+#TODO: tomar diferentes tipos de archivos de entrada
+#TODO: agregar about en sidebar
 
 
 def get_data_linkLag(datalink, dataval):
