@@ -52,17 +52,19 @@ class Visual():
                     use_y_positioning_force=True,
                     use_x_positioning_force=True,
                     edge_size_factor=2,
-                    edge_label_data_source='label'
+                    edge_label_data_source='label',
                     **args)
             components.html(graph.to_html(), height=500)
 
-    def gravis_separated_graph(self, Glist: list):
+    def gravis_separated_graph(self, Glist: list, **args):
         with st.expander('Graphviz Plott(separated graphs)'):
             for G in Glist:
                 graph=gv.d3(G,
                         use_y_positioning_force=True,
                         use_x_positioning_force=True,
-                        edge_size_factor=2)
+                        edge_size_factor=2,
+                        edge_label_data_source='label',
+                        **args)
                 components.html(graph.to_html(), height=500)
 
 
