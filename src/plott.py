@@ -4,9 +4,10 @@ from plot_methods import *
 class Visual():
     sidebar=None
     file=None
-    matplotlib_option: str
+
     G: Graph
     Glist: list
+
     Gdi: Graph
     Gdilist: list
 
@@ -27,6 +28,17 @@ class Visual():
             # st.markdown('### Gravis Directed Plott(separated graphs)')
             # self.gravis_separated_graph(self.Gdilist)
 
+            st.markdown('### Gravis Vis(entire graph)')
+            self.gravis_vis(self.G)
+            self.gravis_separated_vis(self.Glist)
+
+            st.markdown('### Gravis Three(entire graph)')
+            self.gravis_three(self.G)
+            st.markdown('### Gravis Three(separated graphs)')
+            self.gravis_separated_three(self.Glist)
+
+
+            
 
     def initial_text(self):
         # Title and description
@@ -67,6 +79,52 @@ class Visual():
                         **args)
                 components.html(graph.to_html(), height=500)
 
+
+
+    def gravis_vis(self, G: Graph, **args):
+        with st.expander('Graphviz Vis(entire graph)'):
+            graph=gv.vis(G,
+                    edge_size_factor=2,
+                    edge_label_data_source='label',
+                    **args)
+            
+            components.html(graph.to_html(), height=500)
+        
+    def gravis_separated_vis(self, Glist: list, **args):
+        with st.expander('Graphviz Vis(separated graph)'):
+            for G in Glist:
+                graph=gv.vis(G,
+                        edge_size_factor=2,
+                        edge_label_data_source='label',
+                        **args)
+                
+                components.html(graph.to_html(), height=500)
+
+
+
+    def gravis_three(self, G: Graph, **args):
+        with st.expander('Graphviz Three(entire graph)'):
+            graph=gv.three(G,
+                    use_y_positioning_force=True,
+                    use_x_positioning_force=True,
+                    use_z_positioning_force=True,
+                    edge_size_factor=2,
+                    edge_label_data_source='label',
+                    **args)
+            components.html(graph.to_html(), height=500)
+
+    def gravis_separated_three(self, Glist: list, **args):
+        with st.expander('Graphviz Three(separated graphs)'):
+            for G in Glist:
+                graph=gv.three(G,
+                    use_y_positioning_force=True,
+                    use_x_positioning_force=True,
+                    use_z_positioning_force=True,
+                    edge_size_factor=2,
+                    edge_label_data_source='label',
+                    **args)
+                components.html(graph.to_html(), height=500)
+    
 
 
 a= Visual()
