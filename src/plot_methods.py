@@ -1,31 +1,14 @@
-# networkx
 import networkx as nx
 from networkx import Graph
 
+from scipy.io import loadmat
+
 import gravis as gv
 
-# pyvis
-from pyvis.network import Network
-
-# graphviz
-import graphviz
-
-# streamlit
 import streamlit as st
 import streamlit.components.v1 as components
 
-# matplotlib
-import matplotlib.pyplot as plt
 
-# os
-from os import getcwd
-from os.path import join
-
-# scipy and numpy
-from scipy.io import loadmat
-import numpy as np
-
-import random
 
 #TODO: fix the color of the edges to reduce the limit
 #TODO: add a legend of the colors
