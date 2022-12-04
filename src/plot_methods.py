@@ -30,7 +30,6 @@ def remove_not_linked_nodes(G: Graph):
     G.remove_nodes_from(to_remove)
 
 
-
 def get_data_linkLag(datalink, dataval):
     '''
     Create a dictionary from two lists
@@ -58,7 +57,6 @@ def get_data_linkLag(datalink, dataval):
                     newdata[rowcount] = {columncount: dataval[rowcount-1][columncount-1]}
 
     return newdata
-
 
 
 def load_dict(file: str, linkLag: str, valLag: str):
@@ -112,7 +110,6 @@ def merge_lags(lags: list, n: int):
     return newlag
 
 
-
 def make_directed_graph(file):
     G= nx.DiGraph()
     vallag_list= []
@@ -130,8 +127,21 @@ def make_directed_graph(file):
     lags_merged= merge_lags(lag_dicts, len(loadmat(file)[vallag_list[0][0]]))
 
     for node in lags_merged:
-        G.add_node(node, label= str(node), title= str(node))
+        G.add_node(node,
+                label= str(node),
+                title= str(node),
+                opacity=0.7,
+                border_color='black',
+                border_size=2,
+                color= 'gray')
         for xnode in lags_merged[node]:
+            G.add_node(xnode,
+                label= str(node),
+                title= str(node),
+                opacity=0.7,
+                border_color='black',
+                border_size=2,
+                color= 'gray')
             G.add_edge(node, xnode, color= to_hexa_rgb(lags_merged[node][xnode]['avg']), label= lags_merged[node][xnode]['text'])
     return G
 
@@ -148,11 +158,17 @@ def make_graph_lag0(file: str):
     linkl= load_dict(file, 'linkLag0', 'vallag0')
 
     for node in linkl:
-        G.add_node(node, label= str(node), title= str(node))
+        G.add_node(node,
+                label= str(node),
+                title= str(node),
+                opacity=0.7,
+                border_color='black',
+                border_size=2,
+                color= 'gray')
         for xnode in linkl[node]:
-            G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode]))
+            # G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode]))
+            G.add_edge(node, xnode, color= '#000000')
     return G
-
 
 
 def make_separated_graphs(G: Graph):
@@ -175,7 +191,6 @@ def make_separated_graphs(G: Graph):
     return G
 
 
-
 def separate_graphs(G: Graph):
     '''
     Separate the graph G in subgraphs
@@ -185,7 +200,6 @@ def separate_graphs(G: Graph):
     :rtype: list
     '''
     return [G.subgraph(c).copy() for c in nx.connected_components(G)]
-
 
 
 def merge_graphs(Glist: list):
@@ -202,7 +216,6 @@ def merge_graphs(Glist: list):
     return G
 
 
-
 def find_biggest_graph(Glist: list):
     '''
     Find the biggest graph in a list of graphs
@@ -213,7 +226,6 @@ def find_biggest_graph(Glist: list):
     '''
     Glist.sort(key=lambda x: len(x.nodes), reverse=True)
     return Glist[0]
-
 
 
 def to_hexa_rgb(number: int):
@@ -230,5 +242,3 @@ def to_hexa_rgb(number: int):
     else:
         return '#' + '00' + n + '00'
 
-
-print(to_hexa_rgb(0))
