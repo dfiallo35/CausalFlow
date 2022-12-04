@@ -28,6 +28,10 @@ import numpy as np
 import random
 
 #TODO: fix the color of the edges to reduce the limit
+#TODO: add a legend of the colors
+#TODO: add a legend of the nodes(nodes names)
+#TODO: separate the directed graph in subgraphs
+#TODO: compacted graph
 
 def remove_not_linked_nodes(G: Graph):
     '''
@@ -106,7 +110,6 @@ def load_dict(file: str, linkLag: str, valLag: str):
 
 
 def merge_lags(lags: list, n: int):
-    print(lags)
     newlag= dict()
     for i in range(n):
         for j in range(n):
@@ -243,9 +246,3 @@ def to_hexa_rgb(number: int):
         return '#' + n + '0000'
     else:
         return '#' + '00' + n + '00'
-
-make_directed_graph('C:\\Users\\dfial\\Documents\\GitHub\\graph_plotting\\graphs\\100206detrend_estimulo2_Correlation.mat')
-
-# a= dict()
-# a[1]= {2: {'text': '1', 'avg': 0.5}}
-# print(a)
