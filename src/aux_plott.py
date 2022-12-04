@@ -1,4 +1,18 @@
 from plot_methods import *
+# pyvis
+from pyvis.network import Network
+
+# graphviz
+import graphviz
+
+# matplotlib
+import matplotlib.pyplot as plt
+
+# os
+from os import getcwd
+from os.path import join
+
+import numpy as np
 
 
 def pyvis_graph(self):
