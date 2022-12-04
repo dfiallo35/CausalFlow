@@ -23,7 +23,7 @@ class Visual():
             self.gravis_separated_graph(self.Glist)
 
             st.markdown('### Gravis Directed Plott(entire graph)')
-            self.gravis_graph(self.Gdi)
+            self.gravis_graph(self.Gdi, show_edge_label=True)
             # st.markdown('### Gravis Directed Plott(separated graphs)')
             # self.gravis_separated_graph(self.Gdilist)
 
@@ -46,12 +46,14 @@ class Visual():
 
 
 
-    def gravis_graph(self, G: Graph):
+    def gravis_graph(self, G: Graph, **args):
         with st.expander('Graphviz Plott(entire graph)'):
             graph=gv.d3(G,
                     use_y_positioning_force=True,
                     use_x_positioning_force=True,
-                    edge_size_factor=2)
+                    edge_size_factor=2,
+                    edge_label_data_source='label'
+                    **args)
             components.html(graph.to_html(), height=500)
 
     def gravis_separated_graph(self, Glist: list):

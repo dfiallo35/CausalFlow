@@ -149,7 +149,7 @@ def make_directed_graph(file):
     for node in lags_merged:
         G.add_node(node, label= str(node), title= str(node))
         for xnode in lags_merged[node]:
-            G.add_edge(node, xnode, color= to_hexa_rgb(lags_merged[node][xnode]['avg']), title= lags_merged[node][xnode]['text'])
+            G.add_edge(node, xnode, color= to_hexa_rgb(lags_merged[node][xnode]['avg']), label= lags_merged[node][xnode]['text'])
     return G
 
 
@@ -246,3 +246,6 @@ def to_hexa_rgb(number: int):
         return '#' + n + '0000'
     else:
         return '#' + '00' + n + '00'
+
+
+print(to_hexa_rgb(0))
