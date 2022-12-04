@@ -134,7 +134,10 @@ def make_directed_graph(file):
                 border_color='black',
                 border_size=2,
                 color= 'gray')
-            G.add_edge(node, xnode, color= to_hexa_rgb(lags_merged[node][xnode]['avg']), label= lags_merged[node][xnode]['text'])
+            
+            G.add_edge(node, xnode,
+                    color= to_hexa_rgb(lags_merged[node][xnode]['avg']),
+                    label= lags_merged[node][xnode]['text'])
     return G
 
 
@@ -158,8 +161,7 @@ def make_graph_lag0(file: str):
                 border_size=2,
                 color= 'gray')
         for xnode in linkl[node]:
-            # G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode]))
-            G.add_edge(node, xnode, color= '#000000')
+            G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode]))
     return G
 
 
