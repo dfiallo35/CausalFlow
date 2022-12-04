@@ -105,16 +105,49 @@ def load_dict(file: str, linkLag: str, valLag: str):
     return get_data_linkLag(datalink, dataval)
 
 
+def merge_lags(lags: list, n: int):
+    print(lags)
+    newlag= dict()
+    for i in range(n):
+        for j in range(n):
+            count= 1
+            edge= []
+            avg= 0
+            for lag in lags:
+                if lag.get(i) and lag[i].get(j) and i != j:
+                    avg+= lag[i][j]
+                    edge.append(str(count))
+                count+=1
+            if edge != []:
+                if newlag.get(i) == None:
+                    newlag[i]= {j: {'text': ','.join(edge), 'avg': avg/len(edge)}}
+                else:
+                    newlag[i][j]= {'text': ','.join(edge), 'avg': avg/len(edge)}
+    return newlag
+
+
+
 def make_directed_graph(file):
     G= nx.DiGraph()
     vallag_list= []
-    for i in loadmat(file):
-        if i[:len(i)-1] == 'vallag' and i != 'vallag0':
-            vallag_list.append(i)
-    vallag_list.sort()
-    print(vallag_list)
+    elements= list(loadmat(file).keys())
+
+    n=1
+    while 'vallag'+str(n) in elements and 'linkLag'+str(n) in elements:
+        vallag_list.append(('linkLag'+str(n), 'vallag'+str(n)))
+        n+=1
     
-    # linkl= load_dict(file, 'linkLag0', 'vallag0')
+    lag_dicts= []
+    for lag in vallag_list:
+        lag_dicts.append(load_dict(file, lag[0], lag[1]))
+
+    lags_merged= merge_lags(lag_dicts, len(loadmat(file)[vallag_list[0][0]]))
+
+    for node in lags_merged:
+        G.add_node(node, label= str(node), title= str(node))
+        for xnode in lags_merged[node]:
+            G.add_edge(node, xnode, color= to_hexa_rgb(lags_merged[node][xnode]['avg']), title= lags_merged[node][xnode]['text'])
+    return G
 
 
 def make_graph_lag0(file: str):
@@ -211,5 +244,8 @@ def to_hexa_rgb(number: int):
     else:
         return '#' + '00' + n + '00'
 
+make_directed_graph('C:\\Users\\dfial\\Documents\\GitHub\\graph_plotting\\graphs\\100206detrend_estimulo2_Correlation.mat')
 
-
+# a= dict()
+# a[1]= {2: {'text': '1', 'avg': 0.5}}
+# print(a)
