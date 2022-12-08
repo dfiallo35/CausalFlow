@@ -10,16 +10,21 @@ import streamlit.components.v1 as components
 
 
 
-#TODO: ajustar el colormap a los minimos y maximos de los lags
-#TODO: arreglar la escala de colores de to_hexa_rgb
-#TODO: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
-#TODO: agregarle nombre a los nodos
-#TODO: separar el grafo dirigido en subgrafos(el no dirigido ya está separado, pero esa funcion no es valida para los dirigidos)
-#TODO: compactar el grafo para que sea mas legible
-#TODO: ajustar el gravis_vis para que se vea bien en streamlit
-#TODO: ajustar gravis three para que se vea bien en streamlit
-#TODO: tomar diferentes tipos de archivos de entrada
-#TODO: agregar about en sidebar
+#fix: escala de colores de to_hexa_rgb
+#todo: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
+
+#todo: agregarle nombre a los nodos
+#todo: separar el grafo dirigido en subgrafos(el no dirigido ya está separado, pero esa funcion no es valida para los dirigidos)
+#todo: compactar el grafo para que sea mas legible
+#todo: agregar metodos para separar los grafos en subgrafos
+
+#fix: ajustar el gravis_vis para que se vea bien en streamlit
+#fix: ajustar gravis three para que se vea bien en streamlit
+#todo: tomar diferentes tipos de archivos de entrada
+
+#todo: agregar about en sidebar
+
+#todo: graficar solo un nodo y todos sus enlaces(recibir nombre de nodo)
 
 
 def get_data_linkLag(datalink, dataval):
@@ -118,6 +123,13 @@ def make_directed_graph(file):
 
     lags_merged= merge_lags(lag_dicts, len(loadmat(file)[vallag_list[0][0]]))
 
+    wlist=[]
+    for node in lags_merged:
+        for xnode in lags_merged[node]:
+            wlist.append(lags_merged[node][xnode]['avg'])
+    max, min= find_max_min_w(wlist)
+    print(max, min)
+
     for node in lags_merged:
         G.add_node(node,
                 label= str(node),
@@ -136,8 +148,9 @@ def make_directed_graph(file):
                 color= 'gray')
             
             G.add_edge(node, xnode,
-                    color= to_hexa_rgb(lags_merged[node][xnode]['avg']),
-                    label= lags_merged[node][xnode]['text'])
+                    color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min),
+                    label= lags_merged[node][xnode]['text'],
+                    arrow_color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min))
     return G
 
 
@@ -152,6 +165,13 @@ def make_graph_lag0(file: str):
     G:Graph= Graph()
     linkl= load_dict(file, 'linkLag0', 'vallag0')
 
+    wlist=[]
+    for node in linkl:
+        for xnode in linkl[node]:
+            wlist.append(linkl[node][xnode])
+    max, min= find_max_min_w(wlist)
+    print(max, min)
+
     for node in linkl:
         G.add_node(node,
                 label= str(node),
@@ -161,7 +181,7 @@ def make_graph_lag0(file: str):
                 border_size=2,
                 color= 'gray')
         for xnode in linkl[node]:
-            G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode]))
+            G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode], max, min))
     return G
 
 
@@ -222,7 +242,18 @@ def find_biggest_graph(Glist: list):
     return Glist[0]
 
 
-def to_hexa_rgb(number: int):
+def find_max_min_w(wlist: list):
+    max= 0
+    min= 0
+    for w in wlist:
+        if w >= max:
+            max= w
+        if w <= min:
+            min=w
+    return max, min
+
+
+def to_hexa_rgb(number: int, max: int, min: int):
     '''
     Convert a number to a hexa color
     :param number: Number to convert
@@ -230,9 +261,13 @@ def to_hexa_rgb(number: int):
     :return: Hexa color
     :rtype: str
     '''
-    n= str(hex(int((abs(number) * 230) + 25)))[2:]
     if number >= 0:
-        return '#' + n + '0000'
+        color= 255/max
+        n= int(abs(255 - color * number))
+        n= str(hex(n))[2:]
+        return '#' + 'ff' + n + n
     else:
-        return '#' + '00' + n + '00'
-
+        color= 255/min
+        n= int(abs(255 - color * number))
+        n= str(hex(n))[2:]
+        return '#' + n + 'ff' + n
