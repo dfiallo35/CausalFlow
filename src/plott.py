@@ -19,18 +19,20 @@ class Visual():
             self.generate_graphs()
 
             st.markdown('### Gravis Plott(entire graph)')
-            self.gravis_graph(self.G)
+            self.gravis_graph(self.G, show_edge_label=True)
             st.markdown('### Gravis Plott(separated graphs)')
             self.gravis_separated_graph(self.Glist)
 
             st.markdown('### Gravis Directed Plott(entire graph)')
             self.gravis_graph(self.Gdi, show_edge_label=True)
-            # st.markdown('### Gravis Directed Plott(separated graphs)')
-            # self.gravis_separated_graph(self.Gdilist)
 
             st.markdown('### Gravis Vis(entire graph)')
             self.gravis_vis(self.G)
+            st.markdown('### Gravis Vis(separated graphs)')
             self.gravis_separated_vis(self.Glist)
+
+            st.markdown('### Gravis Vis Directed(entire graph)')
+            self.gravis_vis(self.Gdi, show_edge_label=True)
 
             st.markdown('### Gravis Three(entire graph)')
             self.gravis_three(self.G)
@@ -86,6 +88,12 @@ class Visual():
             graph=gv.vis(G,
                     edge_size_factor=2,
                     edge_label_data_source='label',
+                    central_gravity=1.5,
+                    node_label_size_factor=2.5,
+                    avoid_overlap=1,
+                    layout_algorithm='hierarchicalRepulsion',
+                    spring_constant=0,
+                    node_size_factor=2.5,
                     **args)
             
             components.html(graph.to_html(), height=500)
