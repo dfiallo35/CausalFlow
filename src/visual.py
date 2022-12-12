@@ -57,6 +57,7 @@ class Visual():
         sidebar= st.sidebar
         sidebar.title('Graph options')
         self.file= sidebar.file_uploader('Select a file')
+        self.plott_type= sidebar.selectbox('Select a plott type', ['Plott', 'Complex Plott', '3D Plott', 'Independ'])
 
 
 
