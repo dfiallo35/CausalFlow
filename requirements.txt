@@ -1,0 +1,4 @@
+gravis>=0.1.0
+networkx>=2.8.7
+scipy>=1.8.0
+streamlit>=1.15.1
