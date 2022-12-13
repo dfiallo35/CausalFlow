@@ -244,7 +244,7 @@ def make_directed_graph(file):
     
     lag_dicts= []
     for lag in vallag_list:
-        lag_dicts.append(load_dict(file, lag[0], lag[1]))
+        lag_dicts.append(load_mat(file, lag[0], lag[1]))
 
     lags_merged= merge_lags(lag_dicts, len(loadmat(file)[vallag_list[0][0]]))
 
@@ -253,7 +253,6 @@ def make_directed_graph(file):
         for xnode in lags_merged[node]:
             wlist.append(lags_merged[node][xnode]['avg'])
     max, min= find_max_min_w(wlist)
-    print(max, min)
 
     for node in lags_merged:
         G.add_node(node,
@@ -275,7 +274,8 @@ def make_directed_graph(file):
             G.add_edge(node, xnode,
                     color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min),
                     label= lags_merged[node][xnode]['text'],
-                    arrow_color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min))
+                    arrow_color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min),
+                    arrow_color_hover= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min))
     return G
 
 
@@ -288,14 +288,13 @@ def make_graph_lag0(file: str):
     :rtype: Graph
     '''
     G:Graph= Graph()
-    linkl= load_dict(file, 'linkLag0', 'vallag0')
+    linkl= load_mat(file, 'linkLag0', 'vallag0')
 
     wlist=[]
     for node in linkl:
         for xnode in linkl[node]:
             wlist.append(linkl[node][xnode])
     max, min= find_max_min_w(wlist)
-    print(max, min)
 
     for node in linkl:
         G.add_node(node,
