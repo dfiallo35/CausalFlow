@@ -8,13 +8,14 @@ import gravis as gv
 import streamlit as st
 import streamlit.components.v1 as components
 
+import json
+from os import path
 
 
 #fix: escala de colores de to_hexa_rgb
 #todo: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
 
 #todo: agregarle nombre a los nodos
-#todo: separar el grafo dirigido en subgrafos(el no dirigido ya está separado, pero esa funcion no es valida para los dirigidos)
 #todo: compactar el grafo para que sea mas legible
 #todo: agregar metodos para separar los grafos en subgrafos
 
@@ -24,7 +25,131 @@ import streamlit.components.v1 as components
 
 #todo: agregar about en sidebar
 
-#todo: graficar solo un nodo y todos sus enlaces(recibir nombre de nodo)
+#fix: arreglar el independent nodes para que tenga los metadatos de los nodos y aristas
+
+#todo: agregarle un boton para que se pueda descargar el grafo como json
+#todo: tomar jason como entrada
+
+#todo: investigar sobre la representacion con forma de cerebro
+
+data = {
+  'graph': {
+    'directed': False,
+    'nodes': {
+      1: {},
+      2: {},
+      3: {},
+    },
+    'edges': [
+      {'source': 1, 'target': 2},
+      {'source': 2, 'target': 3},
+    ]
+  }
+}
+
+datamodel= {
+        'graph': {
+            'directed': False,
+            'metadata': {},
+
+            'nodes': {},
+            'edges': [],
+        }
+    }
+
+def to_networkx_graph(data:dict):
+    G = nx.Graph()
+    G.add_nodes_from(data['graph']['nodes'])
+    G.add_edges_from(data['graph']['edges'])
+    return G
+
+def to_dict(G:Graph):
+    data = {
+        'graph': {
+            'directed': False,
+            'nodes': dict(G.nodes(data=True)),
+            'edges': list(G.edges(data=True)),
+        }
+    }
+    return data
+
+def load_json(file:str):
+    data = json.load(open(file))
+    return data
+
+def load_mat(file:str):
+    data = loadmat(file)
+    return data
+
+def load_data(file: str, format: str):
+    if format == 'json':
+        return load_json(file)
+    elif format == 'mat':
+        return load_mat(file)
+
+def save_json(file:str, data:dict):
+    with open(file, 'w') as outfile:
+        json.dump(data, outfile)
+
+def get_math_data(file:str, linkLag:str, valLag:str):
+    data= load_mat(file)
+    newdata= dict()
+    
+    count=0
+    linkl= linkLag + str(count)
+    linkval= []
+    while(linkLag in data):
+        linkl= linkLag + str(count)
+        vall= valLag + str(count)
+        linkval.append((linkl, vall))
+        newdata[linkl]= {}
+        newdata[vall]= []
+
+        for row, data_row in enumerate(data[linkl]):
+            for column, data_column in enumerate(data_row):
+                if data_column != 0:
+                    newdata[linkl][row + 1]= {}
+                    newdata[vall].append({'source': row + 1, 'target': column + 1, 'weight': data[vall][row][column]})
+        count+=1
+
+    graphdict= datamodel.copy()
+    link, val= linkval[0]
+    for node in data[link]:
+        graphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
+    for edge in data[val]:
+        graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'weight': edge['weight'], 'metadata': {'color': to_hexa_rgb(edge['weight'])}})
+
+    digraphdict= datamodel.copy()
+    digraphdict['graph']['directed']= True
+    for link, val in linkval[1:]:
+        for node in data[link]:
+            digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
+        for edge in data[val]:
+            #todo: working here
+            #todo: incert edges and metadata
+            ...
+            # if digraphdict['graph']['edges'].get(edge['source']) and digraphdict['graph']['edges'].get(edge['target']):
+            #     digraphdict['graph']['edges'][edge['source']]['weight'].append(edge['weight'])
+            # else:
+            #     digraphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'weight': [edge['weight']]})
+
+
+def get_graph(file:str, linkLag:str, valLag:str, rename_file:str=None):
+    _, extension= path.splitext(file)
+
+    if extension == '.mat':
+        data= load_mat(file)
+        Gdict= get_math_data(data, linkLag, valLag)
+
+    if extension == '.json':
+        data= load_json(file)
+        G = None
+    
+    return G
+
+
+
+
 
 
 def get_data_linkLag(datalink, dataval):
