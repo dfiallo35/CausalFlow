@@ -395,8 +395,12 @@ def find_max_min_w(wlist: list):
             min=w
     return max, min
 
+def _to_hexa_rgb(n: int):    
+    n= str(hex(n))[2:]
+    return '#' + 'ff' + n + n
 
-def to_hexa_rgb(number: int, max: int, min: int):
+
+def to_hexa_rgb(n: int, max, min):
     '''
     Convert a number to a hexa color
     :param number: Number to convert
@@ -404,13 +408,32 @@ def to_hexa_rgb(number: int, max: int, min: int):
     :return: Hexa color
     :rtype: str
     '''
-    if number >= 0:
-        color= 255/max
-        n= int(abs(255 - color * number))
-        n= str(hex(n))[2:]
-        return '#' + 'ff' + n + n
-    else:
-        color= 255/min
-        n= int(abs(255 - color * number))
-        n= str(hex(n))[2:]
-        return '#' + n + 'ff' + n
+    if(min < 0):
+        max=max-min
+        n=n-min
+        min=0        
+    range=max-min 
+    colors = []
+    color=int(abs(n-min)/range *200)+25
+    colors.append(_to_hexa_rgb(color))
+    return colors
+
+
+# def to_hexa_rgb(number: int, max: int, min: int):
+#     '''
+#     Convert a number to a hexa color
+#     :param number: Number to convert
+#     :type number: int
+#     :return: Hexa color
+#     :rtype: str
+#     '''
+#     if number >= 0:
+#         color= 255/max
+#         n= int(abs(255 - color * number))
+#         n= str(hex(n))[2:]
+#         return '#' + 'ff' + n + n
+#     else:
+#         color= 255/min
+#         n= int(abs(255 - color * number))
+#         n= str(hex(n))[2:]
+#         return '#' + n + 'ff' + n
