@@ -242,6 +242,25 @@ def find_biggest_graph(Glist: list):
     return Glist[0]
 
 
+def get_nodes_graph(G: Graph, nodes: list):
+    '''
+    Get a subgraph of G containing only the nodes in nodes
+    :param G: Graph
+    :type G: Graph
+    :param nodes: List of nodes
+    :type nodes: list
+    :return: Subgraph
+    :rtype: Graph
+    '''
+    newG= Graph()
+    for node in nodes:
+        newG.add_node(node)
+
+    for edge in G.edges:
+        if edge[0] in nodes or edge[1] in nodes:
+            newG.add_edge(edge[0], edge[1])
+    return newG
+
 def find_max_min_w(wlist: list):
     max= 0
     min= 0

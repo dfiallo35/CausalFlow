@@ -17,27 +17,32 @@ class Visual():
 
         if self.file:
             self.generate_graphs()
+            
+            if self.graph_type == 'Graph':
+                st.markdown('### Entire Graph')
+                self.gravis_graph(self.G, show_edge_label=True)
+                st.markdown('### Separated Graphs)')
+                self.gravis_separated_graph(self.Glist)
+                st.markdown('### Indepedent Nodes Graph')
+                self.gravis_independent_nodes(self.G)
 
-            st.markdown('### Gravis Plott(entire graph)')
-            self.gravis_graph(self.G, show_edge_label=True)
-            st.markdown('### Gravis Plott(separated graphs)')
-            self.gravis_separated_graph(self.Glist)
+                st.markdown('### Entire Directed Graph')
+                self.gravis_graph(self.Gdi, show_edge_label=True)
 
-            st.markdown('### Gravis Directed Plott(entire graph)')
-            self.gravis_graph(self.Gdi, show_edge_label=True)
+            if self.graph_type == 'Complex Graph':
+                st.markdown('### Entire Graph')
+                self.gravis_vis(self.G)
+                st.markdown('### Separated Graphs')
+                self.gravis_vis_separated(self.Glist)
 
-            st.markdown('### Gravis Vis(entire graph)')
-            self.gravis_vis(self.G)
-            st.markdown('### Gravis Vis(separated graphs)')
-            self.gravis_separated_vis(self.Glist)
+                st.markdown('### Entire Directed Graph')
+                self.gravis_vis(self.Gdi, show_edge_label=True)
 
-            st.markdown('### Gravis Vis Directed(entire graph)')
-            self.gravis_vis(self.Gdi, show_edge_label=True)
-
-            st.markdown('### Gravis Three(entire graph)')
-            self.gravis_three(self.G)
-            st.markdown('### Gravis Three(separated graphs)')
-            self.gravis_separated_three(self.Glist)
+            if self.graph_type == '3D Graph':
+                st.markdown('### Entire Graph')
+                self.gravis_three(self.G)
+                st.markdown('### Separated Graphs')
+                self.gravis_three_separated(self.Glist)
 
 
             
@@ -57,7 +62,7 @@ class Visual():
         sidebar= st.sidebar
         sidebar.title('Graph options')
         self.file= sidebar.file_uploader('Select a file')
-        self.plott_type= sidebar.selectbox('Select a plott type', ['Plott', 'Complex Plott', '3D Plott', 'Independ'])
+        self.graph_type= sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
 
 
 
@@ -81,6 +86,19 @@ class Visual():
                         edge_label_data_source='label',
                         **args)
                 components.html(graph.to_html(), height=500)
+    
+    def gravis_independent_nodes(self, G: Graph, **args):
+        with st.expander('Graphviz Plott(independent nodes)'):
+            nodes= st.multiselect('Select nodes', sorted(G.nodes))
+            graph= get_nodes_graph(G, nodes)
+
+            graph=gv.d3(graph,
+                    use_y_positioning_force=True,
+                    use_x_positioning_force=True,
+                    edge_size_factor=2,
+                    edge_label_data_source='label',
+                    **args)
+            components.html(graph.to_html(), height=500)
 
 
 
@@ -99,7 +117,7 @@ class Visual():
             
             components.html(graph.to_html(), height=500)
         
-    def gravis_separated_vis(self, Glist: list, **args):
+    def gravis_vis_separated(self, Glist: list, **args):
         with st.expander('Graphviz Vis(separated graph)'):
             for G in Glist:
                 graph=gv.vis(G,
@@ -108,6 +126,18 @@ class Visual():
                         **args)
                 
                 components.html(graph.to_html(), height=500)
+
+    def gravis_vis_independent_nodes(self, G: Graph, **args):
+        with st.expander('Graphviz Vis(independent nodes)'):
+            nodes= st.multiselect('Select nodes', sorted(G.nodes))
+            graph= get_nodes_graph(G, nodes)
+
+            graph=gv.vis(graph,
+                    edge_size_factor=2,
+                    edge_label_data_source='label',
+                    **args)
+            
+            components.html(graph.to_html(), height=500)
 
 
 
@@ -122,7 +152,7 @@ class Visual():
                     **args)
             components.html(graph.to_html(), height=500)
 
-    def gravis_separated_three(self, Glist: list, **args):
+    def gravis_three_separated(self, Glist: list, **args):
         with st.expander('Graphviz Three(separated graphs)'):
             for G in Glist:
                 graph=gv.three(G,
@@ -134,7 +164,19 @@ class Visual():
                     **args)
                 components.html(graph.to_html(), height=500)
     
+    def gravis_three_independent_nodes(self, G: Graph, **args):
+        with st.expander('Graphviz Three(independent nodes)'):
+            nodes= st.multiselect('Select nodes', sorted(G.nodes))
+            graph= get_nodes_graph(G, nodes)
 
+            graph=gv.three(graph,
+                    use_y_positioning_force=True,
+                    use_x_positioning_force=True,
+                    use_z_positioning_force=True,
+                    edge_size_factor=2,
+                    edge_label_data_source='label',
+                    **args)
+            components.html(graph.to_html(), height=500)
 
 a= Visual()
 a.run()
