@@ -97,8 +97,6 @@ class Visual():
         with st.expander('Graphviz Plott(independent nodes)'):
             nodes= st.multiselect('Select nodes', sorted(to_networkx_graph(G).nodes))
             graph= get_nodes_graph(G, nodes)
-            print('graph')
-            print(graph)
             graph=gv.d3(graph,
                     use_y_positioning_force=True,
                     use_x_positioning_force=True,
