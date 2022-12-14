@@ -1,3 +1,4 @@
+from turtle import color
 import networkx as nx
 from networkx import Graph
 
@@ -25,42 +26,34 @@ from os import path
 
 #todo: agregar about en sidebar
 
-#fix: arreglar el independent nodes para que tenga los metadatos de los nodos y aristas
-
 #todo: agregarle un boton para que se pueda descargar el grafo como json
-#todo: tomar jason como entrada
+#todo: tomar json como entrada
 
 #todo: investigar sobre la representacion con forma de cerebro
 
-data = {
-  'graph': {
-    'directed': False,
-    'nodes': {
-      1: {},
-      2: {},
-      3: {},
-    },
-    'edges': [
-      {'source': 1, 'target': 2},
-      {'source': 2, 'target': 3},
-    ]
-  }
-}
-
-datamodel= {
-        'graph': {
-            'directed': False,
-            'metadata': {},
-
-            'nodes': {},
-            'edges': [],
-        }
-    }
-
 def to_networkx_graph(data:dict):
-    G = nx.Graph()
-    G.add_nodes_from(data['graph']['nodes'])
-    G.add_edges_from(data['graph']['edges'])
+    if data['graph']['directed']:
+        G = nx.DiGraph()
+        for node in data['graph']['nodes']:
+            G.add_node(node,
+                    **data['graph']['nodes'][node]['metadata']
+            )
+        for edge in data['graph']['edges']:
+            G.add_edge(edge['source'], edge['target'],
+                    **edge['metadata']
+            )
+    
+    else:
+        G = nx.Graph()
+        for node in data['graph']['nodes']:
+            G.add_node(node,
+                    **data['graph']['nodes'][node]['metadata']
+            )
+        for edge in data['graph']['edges']:
+            G.add_edge(edge['source'], edge['target'],
+                    **edge['metadata']
+            )
+
     return G
 
 def to_dict(G:Graph):
@@ -73,34 +66,30 @@ def to_dict(G:Graph):
     }
     return data
 
+
+
 def load_json(file:str):
     data = json.load(open(file))
     return data
 
 def load_mat(file:str):
-    data = loadmat(file)
-    return data
+    return loadmat(file)
 
-def load_data(file: str, format: str):
-    if format == 'json':
-        return load_json(file)
-    elif format == 'mat':
-        return load_mat(file)
+
 
 def save_json(file:str, data:dict):
     with open(file, 'w') as outfile:
         json.dump(data, outfile)
 
-def get_math_data(file:str, linkLag:str, valLag:str):
-    data= load_mat(file)
+
+def get_math_data(data:dict, linkLag:str, valLag:str):
     newdata= dict()
     
     count=0
     linkl= linkLag + str(count)
+    vall= valLag + str(count)
     linkval= []
-    while(linkLag in data):
-        linkl= linkLag + str(count)
-        vall= valLag + str(count)
+    while linkl in data and vall in data:
         linkval.append((linkl, vall))
         newdata[linkl]= {}
         newdata[vall]= []
@@ -111,203 +100,99 @@ def get_math_data(file:str, linkLag:str, valLag:str):
                     newdata[linkl][row + 1]= {}
                     newdata[vall].append({'source': row + 1, 'target': column + 1, 'weight': data[vall][row][column]})
         count+=1
+        linkl= linkLag + str(count)
+        vall= valLag + str(count)
+    
+    graphdict= {
+        'graph': {
+            'directed': False,
+            'metadata': {},
 
-    graphdict= datamodel.copy()
+            'nodes': {},
+            'edges': [],
+        }
+    }
     link, val= linkval[0]
-    for node in data[link]:
+    for node in newdata[link]:
         graphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
-    for edge in data[val]:
-        graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'weight': edge['weight'], 'metadata': {'color': to_hexa_rgb(edge['weight'])}})
+    
+    edge_colors= colors([c['weight'] for c in newdata[val]])
+    for edge in newdata[val]:
+        graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors[edge['weight']]}})
 
-    digraphdict= datamodel.copy()
-    digraphdict['graph']['directed']= True
+
+    digraphdict= {
+        'graph': {
+            'directed': True,
+            'metadata': {},
+
+            'nodes': {},
+            'edges': [],
+        }
+    }
+    edges= dict()
     for link, val in linkval[1:]:
-        for node in data[link]:
+        for node in newdata[link]:
             digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
-        for edge in data[val]:
-            #todo: working here
-            #todo: incert edges and metadata
-            ...
-            # if digraphdict['graph']['edges'].get(edge['source']) and digraphdict['graph']['edges'].get(edge['target']):
-            #     digraphdict['graph']['edges'][edge['source']]['weight'].append(edge['weight'])
-            # else:
-            #     digraphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'weight': [edge['weight']]})
-
-
-def get_graph(file:str, linkLag:str, valLag:str, rename_file:str=None):
-    _, extension= path.splitext(file)
-
-    if extension == '.mat':
-        data= load_mat(file)
-        Gdict= get_math_data(data, linkLag, valLag)
-
-    if extension == '.json':
-        data= load_json(file)
-        G = None
     
-    return G
+        for edge in newdata[val]:
+            if edges.get((edge['source'], edge['target'])):
+                edges[(edge['source'], edge['target'])].append(edge['weight'])
+            else:
+                edges[(edge['source'], edge['target'])]= [edge['weight']]
 
-
-
-
-
-
-def get_data_linkLag(datalink, dataval):
-    '''
-    Create a dictionary from two lists
-    :param datalink: List of links
-    :type datalink: list
-    :param dataval: List of values
-    :type dataval: list
-    :return: Dictionary
-    :rtype: dict
-    '''
-    rowcount=0
-    newdata= dict()
-
-    for row in datalink:
-        rowcount+=1
-        columncount=0
-
-        for column in row:
-            columncount+=1
-
-            if column != 0:
-                if newdata.get(rowcount):
-                    newdata[rowcount][columncount]= dataval[rowcount-1][columncount-1]
-                else:
-                    newdata[rowcount] = {columncount: dataval[rowcount-1][columncount-1]}
-
-    return newdata
-
-
-def load_dict(file: str, linkLag: str, valLag: str):
-    """
-    Load a dictionary from a .mat file
-    :param file: Path to the .mat file
-    :type file: str
-    :param linkLag: Name of the dictionary in the .mat file
-    :type linkLag: str
-    :param valLag: Name of the dictionary in the .mat file
-    :type valLag: str
-    :return: Dictionary
-    :rtype: dict
-    """
-    data = loadmat(file)
-    datalink = []
-
-    for i in data[linkLag]:
-        temp=[]
-        for j in i:
-            temp.append(j)
-        datalink.append(temp)
     
-    dataval = []
-    for i in data[valLag]:
-        temp=[]
-        for j in i:
-            temp.append(round(j, 4))
-        dataval.append(temp)
+    for edge in edges:
 
-    return get_data_linkLag(datalink, dataval)
+        if edge[0] != edge[1]:
+            #todo: add color
+            w= sum(edges[edge])/len(edges[edge])
+            digraphdict['graph']['edges'].append({'source': edge[0], 'target': edge[1], 'metadata': {'color': w}})
+            node = edge[1]
+            digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
 
-
-def merge_lags(lags: list, n: int):
-    newlag= dict()
-    for i in range(n):
-        for j in range(n):
-            count= 1
-            edge= []
-            avg= 0
-            for lag in lags:
-                if lag.get(i) and lag[i].get(j) and i != j:
-                    avg+= lag[i][j]
-                    edge.append(str(count))
-                count+=1
-            if edge != []:
-                if newlag.get(i) == None:
-                    newlag[i]= {j: {'text': ','.join(edge), 'avg': avg/len(edge)}}
-                else:
-                    newlag[i][j]= {'text': ','.join(edge), 'avg': avg/len(edge)}
-    return newlag
+    edge_colors= colors([c['metadata']['color'] for c in digraphdict['graph']['edges']])
+    for edge in digraphdict['graph']['edges']:
+        edge['metadata']['color']= edge_colors[edge['metadata']['color']]
 
 
-def make_directed_graph(file):
-    G= nx.DiGraph()
-    vallag_list= []
-    elements= list(loadmat(file).keys())
-
-    n=1
-    while 'vallag'+str(n) in elements and 'linkLag'+str(n) in elements:
-        vallag_list.append(('linkLag'+str(n), 'vallag'+str(n)))
-        n+=1
-    
-    lag_dicts= []
-    for lag in vallag_list:
-        lag_dicts.append(load_mat(file, lag[0], lag[1]))
-
-    lags_merged= merge_lags(lag_dicts, len(loadmat(file)[vallag_list[0][0]]))
-
-    wlist=[]
-    for node in lags_merged:
-        for xnode in lags_merged[node]:
-            wlist.append(lags_merged[node][xnode]['avg'])
-    max, min= find_max_min_w(wlist)
-
-    for node in lags_merged:
-        G.add_node(node,
-                label= str(node),
-                title= str(node),
-                opacity=0.7,
-                border_color='black',
-                border_size=2,
-                color= 'gray')
-        for xnode in lags_merged[node]:
-            G.add_node(xnode,
-                label= str(node),
-                title= str(node),
-                opacity=0.7,
-                border_color='black',
-                border_size=2,
-                color= 'gray')
-            
-            G.add_edge(node, xnode,
-                    color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min),
-                    label= lags_merged[node][xnode]['text'],
-                    arrow_color= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min),
-                    arrow_color_hover= to_hexa_rgb(lags_merged[node][xnode]['avg'], max, min))
-    return G
+    return graphdict, digraphdict
 
 
-def make_graph_lag0(file: str):
+
+def separate_graphs(G: Graph):
     '''
-    Create a graph from a .mat file
-    :param file: Path to the .mat file
-    :type file: str
+    Separate the graph G in subgraphs
+    :param G: Graph created with networkx
+    :type G: Graph
+    :return: List of subgraphs
+    :rtype: list
+    '''
+    return [G.subgraph(c).copy() for c in nx.connected_components(G)]
+
+def merge_graphs(Glist: list):
+    '''
+    Merge a list of graphs into one graph
+    :param Gs: List of graphs
+    :type Gs: list
     :return: Graph
     :rtype: Graph
     '''
-    G:Graph= Graph()
-    linkl= load_mat(file, 'linkLag0', 'vallag0')
-
-    wlist=[]
-    for node in linkl:
-        for xnode in linkl[node]:
-            wlist.append(linkl[node][xnode])
-    max, min= find_max_min_w(wlist)
-
-    for node in linkl:
-        G.add_node(node,
-                label= str(node),
-                title= str(node),
-                opacity=0.7,
-                border_color='black',
-                border_size=2,
-                color= 'gray')
-        for xnode in linkl[node]:
-            G.add_edge(node, xnode, color= to_hexa_rgb(linkl[node][xnode], max, min))
+    G = nx.Graph()
+    for g in Glist:
+        G = nx.compose(G, g)
     return G
 
+def find_biggest_graph(Glist: list):
+    '''
+    Find the biggest graph in a list of graphs
+    :param Gs: List of graphs
+    :type Gs: list
+    :return: Graph
+    :rtype: Graph
+    '''
+    Glist.sort(key=lambda x: len(x.nodes), reverse=True)
+    return Glist[0]
 
 def make_separated_graphs(G: Graph):
     '''
@@ -329,44 +214,8 @@ def make_separated_graphs(G: Graph):
     return G
 
 
-def separate_graphs(G: Graph):
-    '''
-    Separate the graph G in subgraphs
-    :param G: Graph created with networkx
-    :type G: Graph
-    :return: List of subgraphs
-    :rtype: list
-    '''
-    return [G.subgraph(c).copy() for c in nx.connected_components(G)]
 
-
-def merge_graphs(Glist: list):
-    '''
-    Merge a list of graphs into one graph
-    :param Gs: List of graphs
-    :type Gs: list
-    :return: Graph
-    :rtype: Graph
-    '''
-    G = nx.Graph()
-    for g in Glist:
-        G = nx.compose(G, g)
-    return G
-
-
-def find_biggest_graph(Glist: list):
-    '''
-    Find the biggest graph in a list of graphs
-    :param Gs: List of graphs
-    :type Gs: list
-    :return: Graph
-    :rtype: Graph
-    '''
-    Glist.sort(key=lambda x: len(x.nodes), reverse=True)
-    return Glist[0]
-
-
-def get_nodes_graph(G: Graph, nodes: list):
+def get_nodes_graph(G: dict, nodes: list):
     '''
     Get a subgraph of G containing only the nodes in nodes
     :param G: Graph
@@ -376,14 +225,61 @@ def get_nodes_graph(G: Graph, nodes: list):
     :return: Subgraph
     :rtype: Graph
     '''
-    newG= Graph()
-    for node in nodes:
-        newG.add_node(node)
+    if G['graph']['directed']:
+        newG = {
+            'graph': {
+                'metadata': {},
+                'directed': True,
+                'nodes': {},
+                'edges': [],
+            }
+        }
+        for node in G['graph']['nodes']:
+            if node in nodes:
+                newG['graph']['nodes'][node]= G['graph']['nodes'][node]
 
-    for edge in G.edges:
-        if edge[0] in nodes or edge[1] in nodes:
-            newG.add_edge(edge[0], edge[1])
+        for edge in G['graph']['edges']:
+            if newG['graph']['nodes'].get(edge['source']):
+                newG['graph']['edges'].append(edge)
+                newG['graph']['nodes'][node]= G['graph']['nodes'][edge['target']]
+    
+    else:
+        newG = {
+            'graph': {
+                'metadata': {},
+                'directed': False,
+                'nodes': {},
+                'edges': [],
+            }
+        }
+        for node in G['graph']['nodes']:
+            if node in nodes:
+                newG['graph']['nodes'][node]= G['graph']['nodes'][node]
+
+        for edge in G['graph']['edges']:
+            if edge['source'] in nodes:
+                newG['graph']['edges'].append(edge)
+                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['target']]
+                newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
+
     return newG
+
+
+
+def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
+    _, extension= path.splitext(file.name)
+
+    if extension == '.mat':
+        Gdict, Gdidict = get_math_data(load_mat(file), linkLag, valLag)
+        separated_graphs= make_separated_graphs(to_networkx_graph(Gdict))
+
+    if extension == '.json':
+        data= load_json(file)
+        Gdict, Gdidict = None
+    
+    return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs}
+
+
 
 def find_max_min_w(wlist: list):
     max= 0
@@ -418,6 +314,12 @@ def to_hexa_rgb(n: int, max, min):
     colors.append(_to_hexa_rgb(color))
     return colors
 
+
+def colors(wlist: list):
+    d= dict()
+    for w in wlist:
+        d[w]= '#ff0000'
+    return d
 
 # def to_hexa_rgb(number: int, max: int, min: int):
 #     '''
