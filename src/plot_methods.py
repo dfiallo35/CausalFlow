@@ -1,4 +1,3 @@
-from turtle import color
 import networkx as nx
 from networkx import Graph
 
