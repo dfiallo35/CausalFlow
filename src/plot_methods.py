@@ -136,17 +136,18 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
     
         for edge in newdata[val]:
             if edges.get((edge['source'], edge['target'])):
-                edges[(edge['source'], edge['target'])].append(edge['weight'])
+                edges[(edge['source'], edge['target'])].append({'weight':edge['weight'], 'lags':val[len(valLag):]})
             else:
-                edges[(edge['source'], edge['target'])]= [edge['weight']]
+                edges[(edge['source'], edge['target'])]= [{'weight':edge['weight'], 'lags':val[len(valLag):]}]
 
     
     for edge in edges:
 
         if edge[0] != edge[1]:
             #todo: add color
-            w= sum(edges[edge])/len(edges[edge])
-            digraphdict['graph']['edges'].append({'source': edge[0], 'target': edge[1], 'metadata': {'color': w}})
+            lags= ','.join([e['lags'] for e in edges[edge]])
+            w= sum([e['weight'] for e in edges[edge]])/len(edges[edge])
+            digraphdict['graph']['edges'].append({'source': edge[0], 'target': edge[1], 'metadata': {'color': w, 'label':lags}})
             node = edge[1]
             digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
 
