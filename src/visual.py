@@ -57,6 +57,11 @@ class Visual():
                 st.markdown('### Entire Directed Graph Indepedent Nodes')
                 self.gravis_vis_independent_nodes(self.Gdi)
 
+                st.markdown('### Brain Graph')
+                self.gravis_three(brain_3d_graph(self.G), layout_algorithm_active=False,)
+                st.markdown('### Brain Directed Graph')
+                self.gravis_three(brain_3d_graph(self.Gdi), layout_algorithm_active=False,)
+
 
             
 
@@ -165,6 +170,7 @@ class Visual():
                     use_z_positioning_force=True,
                     edge_size_factor=2,
                     edge_label_data_source='label',
+                    
                     **args)
             components.html(graph.to_html(), height=500)
 

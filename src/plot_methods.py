@@ -318,6 +318,26 @@ def add_colorbar(colors: list):
     cv2.imwrite(join(imgs_dir,'d.jpg'), graph_img)
 
 
+def brain_3d_graph(G: dict):
+    newG= {
+        'graph': {
+            'nodes': {},
+            'edges': [],
+        }
+    }
+    newG['graph']['metadata']= G['graph']['metadata']
+    newG['graph']['directed']= G['graph']['directed']
+    data= load_json(join(data_dir, 'brain_3d.json'))
+    for node in G['graph']['nodes']:
+        newG['graph']['nodes'][node]= G['graph']['nodes'][node]
+        # newG['graph']['nodes'][node]['metadata'].update(data[str(node)])
+        newG['graph']['nodes'][node]['metadata']['x']= float(data[str(node)]['x'])*2
+        newG['graph']['nodes'][node]['metadata']['y']= float(data[str(node)]['y'])*2
+        newG['graph']['nodes'][node]['metadata']['z']= float(data[str(node)]['z'])*2
+    for edge in G['graph']['edges']:
+        newG['graph']['edges'].append(edge)
+    return newG
+
 
 
 
