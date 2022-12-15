@@ -21,7 +21,7 @@ data_dir= realpath(join(dirname(__file__), 'data'))
 
 
 #fix: escala de colores de to_hexa_rgb
-#todo: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
+#fix: colorbar
 
 #todo: agregarle nombre a los nodos
 #todo: compactar el grafo para que sea mas legible
@@ -63,6 +63,7 @@ def to_networkx_graph(data:dict):
 
     return G
 
+#check: not tested
 def to_dict(G:Graph):
     data = {
         'graph': {
@@ -83,7 +84,7 @@ def load_mat(file:str):
     return loadmat(file)
 
 
-
+#check: not tested
 def save_json(file:str, data:dict):
     with open(file, 'w') as outfile:
         json.dump(data, outfile)
@@ -317,7 +318,7 @@ def add_colorbar(colors: list):
 
     cv2.imwrite(join(data_dir,'graph_colorbar.jpg'), graph_img)
 
-
+#todo: increce and decrease the distance between nodes
 def brain_3d_graph(G: dict):
     newG= {
         'graph': {
