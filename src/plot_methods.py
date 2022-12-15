@@ -289,8 +289,9 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     if extension == '.mat':
         Gdict, Gdidict, edge_colors = get_math_data(load_mat(file), linkLag, valLag)
         separated_graphs= make_separated_graphs(to_networkx_graph(Gdict))
-        sorted_colors= sorted([(color, edge_colors[color]) for color in edge_colors], key=lambda x: x[1])
-        print(sorted_colors)
+        sorted_colors= sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
+        for a in sorted_colors:
+            print(a[0], a[1])
 
     if extension == '.json':
         data= load_json(file)
