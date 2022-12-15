@@ -11,6 +11,14 @@ import streamlit.components.v1 as components
 import json
 from os import path
 
+from geemap import save_colorbar
+import geemap.colormaps as cm
+import cv2
+from os.path import realpath, join, dirname
+from PIL import Image
+
+imgs_dir= realpath(join(dirname(__file__), 'imgs'))
+
 
 #fix: escala de colores de to_hexa_rgb
 #todo: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
@@ -278,6 +286,37 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
         Gdict, Gdidict = None
     
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs}
+
+
+
+#todo: work
+def add_colorbar(colors: list):
+
+    colorbar_dir= realpath(join(imgs_dir, 'colorbar.png'))
+    graph_dir= realpath(join(imgs_dir, 'graph.png'))
+
+    save_colorbar(colorbar_dir,
+                width= 1.5, height=15,
+                tick_size= 20,
+                vmin=-1, vmax= 1,
+                palette=cm.palettes.fromkeys(['#0000ff', '#ffffff', '#ff0000']),
+                discrete=False,
+                show_colorbar=False,
+                orientation='vertical')
+    
+    graph_img= cv2.imread(graph_dir)
+    colorbar_img = cv2.imread(colorbar_dir)
+
+    gh, gw, _ = graph_img.shape
+    ch, cw, _ = colorbar_img.shape
+
+    for a, x in zip(range(gh-ch, gh), range(0, ch)):
+        for b, y in zip(range(gw- cw, gw), range(0, cw)):
+            graph_img[a][b]= colorbar_img[x][y]
+
+    cv2.imwrite(join(imgs_dir,'d.jpg'), graph_img)
+
+
 
 
 

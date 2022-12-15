@@ -69,7 +69,12 @@ class Visual():
         sidebar.title('Graph options')
         self.file= sidebar.file_uploader('Select a file')
         self.graph_type= sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
-
+        
+        cb= sidebar.file_uploader('Add ColorBar')
+        if cb:
+            pic= Image.open(cb)
+            pic.save(join(imgs_dir, 'graph.png'))
+            add_colorbar([])
 
 
     def gravis_graph(self, G: Graph, **args):
@@ -121,7 +126,7 @@ class Visual():
                     **args)
             
             components.html(graph.to_html(), height=500)
-        
+
     def gravis_vis_separated(self, Glist: list, **args):
         with st.expander('Graphviz Vis(separated graph)'):
             for G in Glist:
