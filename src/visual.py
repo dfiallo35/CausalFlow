@@ -17,6 +17,11 @@ class Visual():
 
         if self.file:
             self.generate_graphs()
+            cb= self.empty_uploader.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
+            if cb:
+                pic= Image.open(cb)
+                pic.save(join(data_dir, 'graph.png'))
+                add_colorbar(self.edge_colors)
             
             if self.graph_type == 'Graph':
                 st.markdown('### Entire Graph')
@@ -74,19 +79,14 @@ class Visual():
         self.G= graphs['Gdict']
         self.Glist= graphs['Separated Graphs']
         self.Gdi= graphs['Gdidict']
+        self.edge_colors= graphs['Edge Colors']
 
     def make_sidebar(self):
         sidebar= st.sidebar
         sidebar.title('Graph options')
-        self.file= sidebar.file_uploader('Select a file')
+        self.file= sidebar.file_uploader('Select a file', type=['mat', 'json'])
         self.graph_type= sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
-        
-        cb= sidebar.file_uploader('Add ColorBar')
-        if cb:
-            pic= Image.open(cb)
-            pic.save(join(data_dir, 'graph.png'))
-            add_colorbar([])
-
+        self.empty_uploader= sidebar.empty()
 
     def gravis_graph(self, G: Graph, **args):
         with st.expander('Graphviz Plott(entire graph)'):

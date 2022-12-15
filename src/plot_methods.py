@@ -92,11 +92,11 @@ def save_json(file:str, data:dict):
 
 def get_math_data(data:dict, linkLag:str, valLag:str):
     newdata= dict()
-    
     count=0
     linkl= linkLag + str(count)
     vall= valLag + str(count)
     linkval= []
+
     while linkl in data and vall in data:
         linkval.append((linkl, vall))
         newdata[linkl]= {}
@@ -126,10 +126,10 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
         graphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
     
     edges= set()
-    edge_colors= colors([c['weight'] for c in newdata[val]])
+    edge_colors1= colors([c['weight'] for c in newdata[val]])
     for edge in newdata[val]:
         if not (edge['source'], edge['target']) in edges or not (edge['target'], edge['source']) in edges:
-            graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors[edge['weight']]}})
+            graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors1[edge['weight']]}})
             edges.add((edge['source'], edge['target']))
             edges.add((edge['target'], edge['source']))
         
@@ -166,12 +166,14 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
             node = edge[1]
             digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
 
-    edge_colors= colors([c['metadata']['color'] for c in digraphdict['graph']['edges']])
+    edge_colors2= colors([c['metadata']['color'] for c in digraphdict['graph']['edges']])
     for edge in digraphdict['graph']['edges']:
-        edge['metadata']['color']= edge_colors[edge['metadata']['color']]
+        edge['metadata']['color']= edge_colors2[edge['metadata']['color']]
 
-
-    return graphdict, digraphdict
+    edge_colors= dict()
+    edge_colors.update(edge_colors1)
+    edge_colors.update(edge_colors2)
+    return graphdict, digraphdict, edge_colors
 
 
 
@@ -286,28 +288,32 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     _, extension= path.splitext(file.name)
 
     if extension == '.mat':
-        Gdict, Gdidict = get_math_data(load_mat(file), linkLag, valLag)
+        Gdict, Gdidict, edge_colors = get_math_data(load_mat(file), linkLag, valLag)
         separated_graphs= make_separated_graphs(to_networkx_graph(Gdict))
+        sorted_colors= sorted([(color, edge_colors[color]) for color in edge_colors], key=lambda x: x[1])
+        print(sorted_colors)
 
     if extension == '.json':
         data= load_json(file)
         Gdict, Gdidict = None
     
-    return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs}
+    return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs, 'Edge Colors': sorted_colors}
 
 
 
-#todo: work
+#fix: color not centered in 0
 def add_colorbar(colors: list):
 
     colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
     graph_dir= realpath(join(data_dir, 'graph.png'))
 
+    max, min = find_max_min_w([color[0] for color in colors])
+    print(max, min)
     save_colorbar(colorbar_dir,
                 width= 1.5, height=15,
                 tick_size= 20,
-                vmin=-1, vmax= 1,
-                palette=cm.palettes.fromkeys(['#0000ff', '#ffffff', '#ff0000']),
+                vmin=min, vmax= max,
+                palette=cm.palettes.fromkeys([color[1] for color in colors]),
                 discrete=False,
                 show_colorbar=False,
                 orientation='vertical')
@@ -324,7 +330,9 @@ def add_colorbar(colors: list):
 
     cv2.imwrite(join(data_dir,'graph_colorbar.jpg'), graph_img)
 
-#todo: increce and decrease the distance between nodes
+
+
+#todo: increse and decrease the distance between nodes
 def brain_3d_graph(G: dict):
     newG= {
         'graph': {
