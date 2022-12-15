@@ -21,14 +21,16 @@ class Visual():
             if self.graph_type == 'Graph':
                 st.markdown('### Entire Graph')
                 self.gravis_graph(self.G, show_edge_label=True)
-                st.markdown('### Separated Graphs)')
+                st.markdown('### Separated Graphs')
                 self.gravis_separated_graph(self.Glist)
 
                 st.markdown('### Entire Directed Graph')
                 self.gravis_graph(self.Gdi, show_edge_label=True)
 
-                st.markdown('### Indepedent Nodes Graph')
+                st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_independent_nodes(self.G)
+                st.markdown('### Entire Directed Graph Indepedent Nodes')
+                self.gravis_independent_nodes(self.Gdi, show_edge_label=True)
 
             if self.graph_type == 'Complex Graph':
                 st.markdown('### Entire Graph')
@@ -39,8 +41,10 @@ class Visual():
                 st.markdown('### Entire Directed Graph')
                 self.gravis_vis(self.Gdi, show_edge_label=True)
 
-                st.markdown('### Indepedent Nodes Graph')
+                st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_vis_independent_nodes(self.G)
+                st.markdown('### Entire Directed Graph Indepedent Nodes')
+                self.gravis_vis_independent_nodes(self.Gdi)
 
             if self.graph_type == '3D Graph':
                 st.markdown('### Entire Graph')
@@ -48,8 +52,10 @@ class Visual():
                 st.markdown('### Separated Graphs')
                 self.gravis_three_separated(self.Glist)
 
-                st.markdown('### Indepedent Nodes Graph')
+                st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_three_independent_nodes(self.G)
+                st.markdown('### Entire Directed Graph Indepedent Nodes')
+                self.gravis_vis_independent_nodes(self.Gdi)
 
 
             

@@ -249,7 +249,8 @@ def get_nodes_graph(G: dict, nodes: list):
         for edge in G['graph']['edges']:
             if newG['graph']['nodes'].get(edge['source']):
                 newG['graph']['edges'].append(edge)
-                newG['graph']['nodes'][node]= G['graph']['nodes'][edge['target']]
+                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
+                newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
     
     else:
         newG = {
@@ -267,7 +268,7 @@ def get_nodes_graph(G: dict, nodes: list):
         for edge in G['graph']['edges']:
             if edge['source'] in nodes:
                 newG['graph']['edges'].append(edge)
-                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['target']]
+                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
                 newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
 
     return newG
