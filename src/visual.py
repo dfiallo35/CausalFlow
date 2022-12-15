@@ -2,7 +2,6 @@ from plot_methods import *
 
 
 class Visual():
-    sidebar=None
     file=None
 
     G: Graph
@@ -82,11 +81,11 @@ class Visual():
         self.edge_colors= graphs['Edge Colors']
 
     def make_sidebar(self):
-        sidebar= st.sidebar
-        sidebar.title('Graph options')
-        self.file= sidebar.file_uploader('Select a file', type=['mat', 'json'])
-        self.graph_type= sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
-        self.empty_uploader= sidebar.empty()
+        st.sidebar
+        st.sidebar.title('Graph options')
+        self.file= st.sidebar.file_uploader('Select a file', type=['mat', 'json'])
+        self.graph_type= st.sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
+        self.empty_uploader= st.sidebar.empty()
 
     def gravis_graph(self, G: Graph, **args):
         with st.expander('Graphviz Plott(entire graph)'):
