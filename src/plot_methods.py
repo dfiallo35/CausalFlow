@@ -403,7 +403,7 @@ def colors(wlist: list):
     neqrange = neqmax if (abs(neqmax - neqmin) < 10e-10) else neqmax - neqmin
     for w in wlist:
         if w >= 0:
-            d[w] = _int_to_hexa_rgb(int(((w-posmin)/posrange)*220),True)
+            d[w] = _int_to_hexa_rgb(int((1-((w-posmin)/posrange))*200),True)
         else:
-            d[w] = _int_to_hexa_rgb(int((1-((w-neqmin)/neqrange))*220), False)
+            d[w] = _int_to_hexa_rgb(int((((w-neqmin)/neqrange))*200), False)
     return d
