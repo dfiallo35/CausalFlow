@@ -357,51 +357,45 @@ def find_max_min_w(wlist: list):
             min=w
     return max, min
 
-def _to_hexa_rgb(n: int):    
-    n= str(hex(n))[2:]
-    return '#' + 'ff' + n + n
+
+def _int_to_hexa_rgb(n: int, pos : bool = True):  
+    n = str(hex(n))[2:]  if n > 15 else "0" + str(hex(n))[2:]
+    return ('#' + 'ff' + n + n) if pos else ('#' + n + n + 'ff')
 
 
-def to_hexa_rgb(n: int, max, min):
+def _get_posmin_posmax_neqmin_neqmax(l:list):
     '''
-    Convert a number to a hexa color
-    :param number: Number to convert
-    :type number: int
-    :return: Hexa color
-    :rtype: str
+    Get the positive and a negative min and max of a list
+    :param l: List
+    :return: Position of the min, position of the max, position of the min < 0, position of the max < 0
+    :rtype: tuple
     '''
-    if(min < 0):
-        max=max-min
-        n=n-min
-        min=0        
-    range=max-min 
-    colors = []
-    color=int(abs(n-min)/range *200)+25
-    colors.append(_to_hexa_rgb(color))
-    return colors
+    posmin= 2^31
+    posmax= 0
+    neqmin= 0
+    neqmax = -2^32
+    for i in range(len(l)):
+        if l[i] >= 0:
+            if l[i] < posmin:
+                posmin= l[i]
+            if l[i] > posmax:
+                posmax= l[i]
+        else:
+            if l[i] < neqmin:
+                neqmin= l[i]
+            if l[i] > neqmax:
+                neqmax= l[i]        
+    return posmin, posmax, neqmin, neqmax
 
 
 def colors(wlist: list):
-    d= dict()
+    d = dict()
+    posmin, posmax, neqmin, neqmax=_get_posmin_posmax_neqmin_neqmax(wlist)
+    posrange = posmax if (abs(posmax - posmin) < 10e-10) else posmax - posmin
+    neqrange = neqmax if (abs(neqmax - neqmin) < 10e-10) else neqmax - neqmin
     for w in wlist:
-        d[w]= '#ff0000'
+        if w >= 0:
+            d[w] = _int_to_hexa_rgb(int(((w-posmin)/posrange)*220),True)
+        else:
+            d[w] = _int_to_hexa_rgb(int((1-((w-neqmin)/neqrange))*220), False)
     return d
-
-# def to_hexa_rgb(number: int, max: int, min: int):
-#     '''
-#     Convert a number to a hexa color
-#     :param number: Number to convert
-#     :type number: int
-#     :return: Hexa color
-#     :rtype: str
-#     '''
-#     if number >= 0:
-#         color= 255/max
-#         n= int(abs(255 - color * number))
-#         n= str(hex(n))[2:]
-#         return '#' + 'ff' + n + n
-#     else:
-#         color= 255/min
-#         n= int(abs(255 - color * number))
-#         n= str(hex(n))[2:]
-#         return '#' + n + 'ff' + n
