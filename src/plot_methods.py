@@ -129,7 +129,7 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
     edge_colors1= colors([c['weight'] for c in newdata[val]])
     for edge in newdata[val]:
         if not (edge['source'], edge['target']) in edges or not (edge['target'], edge['source']) in edges:
-            graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors1[edge['weight']]}})
+            graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors1[edge['weight']], 'hover': str(round(float(edge['weight']), 4))}})
             edges.add((edge['source'], edge['target']))
             edges.add((edge['target'], edge['source']))
         
@@ -162,7 +162,6 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
             #todo: add color
             lags= ','.join([e['lags'] for e in edges[edge]])
             w= sum([e['weight'] for e in edges[edge]])/len(edges[edge])
-            digraphdict['graph']['edges'].append({'source': edge[0], 'target': edge[1], 'metadata': {'color': w, 'label':lags}})
             node = edge[1]
             digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
 
