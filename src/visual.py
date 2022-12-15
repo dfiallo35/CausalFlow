@@ -84,7 +84,7 @@ class Visual():
         cb= sidebar.file_uploader('Add ColorBar')
         if cb:
             pic= Image.open(cb)
-            pic.save(join(imgs_dir, 'graph.png'))
+            pic.save(join(data_dir, 'graph.png'))
             add_colorbar([])
 
 

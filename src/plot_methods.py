@@ -17,7 +17,7 @@ import cv2
 from os.path import realpath, join, dirname
 from PIL import Image
 
-imgs_dir= realpath(join(dirname(__file__), 'imgs'))
+data_dir= realpath(join(dirname(__file__), 'data'))
 
 
 #fix: escala de colores de to_hexa_rgb
@@ -293,8 +293,8 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
 #todo: work
 def add_colorbar(colors: list):
 
-    colorbar_dir= realpath(join(imgs_dir, 'colorbar.png'))
-    graph_dir= realpath(join(imgs_dir, 'graph.png'))
+    colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
+    graph_dir= realpath(join(data_dir, 'graph.png'))
 
     save_colorbar(colorbar_dir,
                 width= 1.5, height=15,
@@ -315,7 +315,7 @@ def add_colorbar(colors: list):
         for b, y in zip(range(gw- cw, gw), range(0, cw)):
             graph_img[a][b]= colorbar_img[x][y]
 
-    cv2.imwrite(join(imgs_dir,'d.jpg'), graph_img)
+    cv2.imwrite(join(data_dir,'graph_colorbar.jpg'), graph_img)
 
 
 def brain_3d_graph(G: dict):
