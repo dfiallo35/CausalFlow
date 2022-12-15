@@ -120,13 +120,19 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
             'edges': [],
         }
     }
+    
     link, val= linkval[0]
     for node in newdata[link]:
         graphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
     
+    edges= set()
     edge_colors= colors([c['weight'] for c in newdata[val]])
     for edge in newdata[val]:
-        graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors[edge['weight']]}})
+        if not (edge['source'], edge['target']) in edges or not (edge['target'], edge['source']) in edges:
+            graphdict['graph']['edges'].append({'source': edge['source'], 'target': edge['target'], 'metadata': {'color': edge_colors[edge['weight']]}})
+            edges.add((edge['source'], edge['target']))
+            edges.add((edge['target'], edge['source']))
+        
 
 
     digraphdict= {
@@ -331,10 +337,9 @@ def brain_3d_graph(G: dict):
     data= load_json(join(data_dir, 'brain_3d.json'))
     for node in G['graph']['nodes']:
         newG['graph']['nodes'][node]= G['graph']['nodes'][node]
-        # newG['graph']['nodes'][node]['metadata'].update(data[str(node)])
-        newG['graph']['nodes'][node]['metadata']['x']= float(data[str(node)]['x'])*2
-        newG['graph']['nodes'][node]['metadata']['y']= float(data[str(node)]['y'])*2
-        newG['graph']['nodes'][node]['metadata']['z']= float(data[str(node)]['z'])*2
+        newG['graph']['nodes'][node]['metadata']['x']= float(data[str(node)]['x'])*3
+        newG['graph']['nodes'][node]['metadata']['y']= float(data[str(node)]['y'])*3
+        newG['graph']['nodes'][node]['metadata']['z']= float(data[str(node)]['z'])*3
     for edge in G['graph']['edges']:
         newG['graph']['edges'].append(edge)
     return newG
