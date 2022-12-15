@@ -11,9 +11,17 @@ import streamlit.components.v1 as components
 import json
 from os import path
 
+from geemap import save_colorbar
+import geemap.colormaps as cm
+import cv2
+from os.path import realpath, join, dirname
+from PIL import Image
+
+data_dir= realpath(join(dirname(__file__), 'data'))
+
 
 #fix: escala de colores de to_hexa_rgb
-#todo: agregar colormap(se puede tomar la foto guardada y agregarselo despues en una opcion extra)
+#fix: colorbar
 
 #todo: agregarle nombre a los nodos
 #todo: compactar el grafo para que sea mas legible
@@ -55,6 +63,7 @@ def to_networkx_graph(data:dict):
 
     return G
 
+#check: not tested
 def to_dict(G:Graph):
     data = {
         'graph': {
@@ -75,7 +84,7 @@ def load_mat(file:str):
     return loadmat(file)
 
 
-
+#check: not tested
 def save_json(file:str, data:dict):
     with open(file, 'w') as outfile:
         json.dump(data, outfile)
@@ -241,7 +250,8 @@ def get_nodes_graph(G: dict, nodes: list):
         for edge in G['graph']['edges']:
             if newG['graph']['nodes'].get(edge['source']):
                 newG['graph']['edges'].append(edge)
-                newG['graph']['nodes'][node]= G['graph']['nodes'][edge['target']]
+                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
+                newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
     
     else:
         newG = {
@@ -259,7 +269,7 @@ def get_nodes_graph(G: dict, nodes: list):
         for edge in G['graph']['edges']:
             if edge['source'] in nodes:
                 newG['graph']['edges'].append(edge)
-                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['target']]
+                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
                 newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
 
     return newG
@@ -278,6 +288,57 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
         Gdict, Gdidict = None
     
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs}
+
+
+
+#todo: work
+def add_colorbar(colors: list):
+
+    colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
+    graph_dir= realpath(join(data_dir, 'graph.png'))
+
+    save_colorbar(colorbar_dir,
+                width= 1.5, height=15,
+                tick_size= 20,
+                vmin=-1, vmax= 1,
+                palette=cm.palettes.fromkeys(['#0000ff', '#ffffff', '#ff0000']),
+                discrete=False,
+                show_colorbar=False,
+                orientation='vertical')
+    
+    graph_img= cv2.imread(graph_dir)
+    colorbar_img = cv2.imread(colorbar_dir)
+
+    gh, gw, _ = graph_img.shape
+    ch, cw, _ = colorbar_img.shape
+
+    for a, x in zip(range(gh-ch, gh), range(0, ch)):
+        for b, y in zip(range(gw- cw, gw), range(0, cw)):
+            graph_img[a][b]= colorbar_img[x][y]
+
+    cv2.imwrite(join(data_dir,'graph_colorbar.jpg'), graph_img)
+
+#todo: increce and decrease the distance between nodes
+def brain_3d_graph(G: dict):
+    newG= {
+        'graph': {
+            'nodes': {},
+            'edges': [],
+        }
+    }
+    newG['graph']['metadata']= G['graph']['metadata']
+    newG['graph']['directed']= G['graph']['directed']
+    data= load_json(join(data_dir, 'brain_3d.json'))
+    for node in G['graph']['nodes']:
+        newG['graph']['nodes'][node]= G['graph']['nodes'][node]
+        # newG['graph']['nodes'][node]['metadata'].update(data[str(node)])
+        newG['graph']['nodes'][node]['metadata']['x']= float(data[str(node)]['x'])*2
+        newG['graph']['nodes'][node]['metadata']['y']= float(data[str(node)]['y'])*2
+        newG['graph']['nodes'][node]['metadata']['z']= float(data[str(node)]['z'])*2
+    for edge in G['graph']['edges']:
+        newG['graph']['edges'].append(edge)
+    return newG
+
 
 
 

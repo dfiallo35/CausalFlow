@@ -21,14 +21,16 @@ class Visual():
             if self.graph_type == 'Graph':
                 st.markdown('### Entire Graph')
                 self.gravis_graph(self.G, show_edge_label=True)
-                st.markdown('### Separated Graphs)')
+                st.markdown('### Separated Graphs')
                 self.gravis_separated_graph(self.Glist)
 
                 st.markdown('### Entire Directed Graph')
                 self.gravis_graph(self.Gdi, show_edge_label=True)
 
-                st.markdown('### Indepedent Nodes Graph')
+                st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_independent_nodes(self.G)
+                st.markdown('### Entire Directed Graph Indepedent Nodes')
+                self.gravis_independent_nodes(self.Gdi, show_edge_label=True)
 
             if self.graph_type == 'Complex Graph':
                 st.markdown('### Entire Graph')
@@ -39,8 +41,10 @@ class Visual():
                 st.markdown('### Entire Directed Graph')
                 self.gravis_vis(self.Gdi, show_edge_label=True)
 
-                st.markdown('### Indepedent Nodes Graph')
+                st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_vis_independent_nodes(self.G)
+                st.markdown('### Entire Directed Graph Indepedent Nodes')
+                self.gravis_vis_independent_nodes(self.Gdi)
 
             if self.graph_type == '3D Graph':
                 st.markdown('### Entire Graph')
@@ -48,8 +52,15 @@ class Visual():
                 st.markdown('### Separated Graphs')
                 self.gravis_three_separated(self.Glist)
 
-                st.markdown('### Indepedent Nodes Graph')
+                st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_three_independent_nodes(self.G)
+                st.markdown('### Entire Directed Graph Indepedent Nodes')
+                self.gravis_vis_independent_nodes(self.Gdi)
+
+                st.markdown('### Brain Graph')
+                self.gravis_three(brain_3d_graph(self.G), layout_algorithm_active=False,)
+                st.markdown('### Brain Directed Graph')
+                self.gravis_three(brain_3d_graph(self.Gdi), layout_algorithm_active=False,)
 
 
             
@@ -69,7 +80,12 @@ class Visual():
         sidebar.title('Graph options')
         self.file= sidebar.file_uploader('Select a file')
         self.graph_type= sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
-
+        
+        cb= sidebar.file_uploader('Add ColorBar')
+        if cb:
+            pic= Image.open(cb)
+            pic.save(join(data_dir, 'graph.png'))
+            add_colorbar([])
 
 
     def gravis_graph(self, G: Graph, **args):
@@ -121,7 +137,7 @@ class Visual():
                     **args)
             
             components.html(graph.to_html(), height=500)
-        
+
     def gravis_vis_separated(self, Glist: list, **args):
         with st.expander('Graphviz Vis(separated graph)'):
             for G in Glist:
@@ -154,6 +170,7 @@ class Visual():
                     use_z_positioning_force=True,
                     edge_size_factor=2,
                     edge_label_data_source='label',
+                    
                     **args)
             components.html(graph.to_html(), height=500)
 
