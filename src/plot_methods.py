@@ -90,7 +90,8 @@ def save_json(file:str, data:dict):
         json.dump(data, outfile)
 
 
-def get_math_data(data:dict, linkLag:str, valLag:str):
+#todo: add new names
+def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
     newdata= dict()
     count=0
     linkl= linkLag + str(count)
@@ -105,8 +106,8 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
         for row, data_row in enumerate(data[linkl]):
             for column, data_column in enumerate(data_row):
                 if data_column != 0:
-                    newdata[linkl][row + 1]= {}
-                    newdata[vall].append({'source': row + 1, 'target': column + 1, 'weight': data[vall][row][column]})
+                    newdata[linkl][new_names[row + 1]]= {}
+                    newdata[vall].append({'source': new_names[row + 1], 'target': new_names[column + 1], 'weight': data[vall][row][column]})
         count+=1
         linkl= linkLag + str(count)
         vall= valLag + str(count)
@@ -162,6 +163,7 @@ def get_math_data(data:dict, linkLag:str, valLag:str):
             #todo: add color
             lags= ','.join([e['lags'] for e in edges[edge]])
             w= sum([e['weight'] for e in edges[edge]])/len(edges[edge])
+            digraphdict['graph']['edges'].append({'source': edge[0], 'target': edge[1], 'metadata': {'color': w, 'label':lags, 'hover': str(round(float(w), 4))}})
             node = edge[1]
             digraphdict['graph']['nodes'][node]= {'metadata': {'label': str(node), 'title': str(node), 'opacity': 0.7, 'border_color': 'black', 'border_size': 2, 'color': 'gray'}}
 
@@ -283,21 +285,39 @@ def get_nodes_graph(G: dict, nodes: list):
 
 
 
+def get_new_names(rename_file: str) -> dict:
+    #todo: get .mat of new names
+    #todo: return a dict with {<old name>: <new name>}
+    return {i:i+360 for i in range(1, 361)}
+
 def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     _, extension= path.splitext(file.name)
 
     if extension == '.mat':
-        Gdict, Gdidict, edge_colors = get_math_data(load_mat(file), linkLag, valLag)
+        Gdict, Gdidict, edge_colors = get_math_data(load_mat(file), linkLag, valLag, get_new_names(rename_file))
         separated_graphs= make_separated_graphs(to_networkx_graph(Gdict))
         sorted_colors= sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
-        for a in sorted_colors:
-            print(a[0], a[1])
+        
 
     if extension == '.json':
         data= load_json(file)
         Gdict, Gdidict = None
+        #todo: add .json input
     
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs, 'Edge Colors': sorted_colors}
+
+
+def normalize_colorbar(colors: list):
+    nconunt= {
+        'n':0,
+        'p':0,
+    }
+    for c in colors:
+        if float(c[0]) > 0:
+            nconunt['p']= nconunt['p']+1
+        if float(c[0]) < 0:
+            nconunt['n']= nconunt['n']+1
+    return colors
 
 
 
@@ -308,12 +328,12 @@ def add_colorbar(colors: list):
     graph_dir= realpath(join(data_dir, 'graph.png'))
 
     max, min = find_max_min_w([color[0] for color in colors])
-    print(max, min)
+
     save_colorbar(colorbar_dir,
                 width= 1.5, height=15,
                 tick_size= 20,
                 vmin=min, vmax= max,
-                palette=cm.palettes.fromkeys([color[1] for color in colors]),
+                palette=cm.palettes.fromkeys(['#0000ff', '#ffc8c8', '#ff0000']),
                 discrete=False,
                 show_colorbar=False,
                 orientation='vertical')
