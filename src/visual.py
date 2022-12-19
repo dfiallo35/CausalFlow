@@ -121,7 +121,7 @@ class Visual():
             components.html(graph.to_html(), height=500)
 
 
-
+    #check: spring constant
     def gravis_vis(self, G: Graph, **args):
         with st.expander('Graphviz Vis(entire graph)'):
             graph=gv.vis(G,
@@ -143,6 +143,12 @@ class Visual():
                 graph=gv.vis(G,
                         edge_size_factor=2,
                         edge_label_data_source='label',
+                        central_gravity=1.5,
+                        node_label_size_factor=2.5,
+                        avoid_overlap=1,
+                        layout_algorithm='hierarchicalRepulsion',
+                        spring_constant=0,
+                        node_size_factor=2.5,
                         **args)
                 
                 components.html(graph.to_html(), height=500)
@@ -155,6 +161,12 @@ class Visual():
             graph=gv.vis(graph,
                     edge_size_factor=2,
                     edge_label_data_source='label',
+                    central_gravity=1.5,
+                    node_label_size_factor=2.5,
+                    avoid_overlap=1,
+                    layout_algorithm='hierarchicalRepulsion',
+                    spring_constant=0,
+                    node_size_factor=2.5,
                     **args)
             
             components.html(graph.to_html(), height=500)
