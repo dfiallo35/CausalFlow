@@ -24,21 +24,45 @@ data_dir= realpath(join(dirname(__file__), 'data'))
 
 
 def load_json(file:str):
+    '''
+    Load json file
+    :param file: path to json file
+    :return: dict
+    '''
     data = json.load(open(file))
     return data
 
 def load_mat(file:str):
+    '''
+    Load mat file
+    :param file: path to mat file
+    :return: dict
+    '''
     return loadmat(file)
 
 
 #check: not tested
 def save_json(file:str, data:dict):
+    '''
+    Save json file
+    :param file: path to json file
+    :param data: dict
+    '''
     with open(file, 'w') as outfile:
         json.dump(data, outfile)
 
 
 #todo: add new names
 def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
+    '''
+    Get data from mat file as a dict and make it compatible with gravis
+    :param data: dict of mat file with linkLags and valLags
+    :param linkLag: linkLag string
+    :param valLag: valLag string
+    :param new_names: dict with new names
+    :return: graphdict, digraphdict(the dict version of the graph and digraph respectively)
+    and edge colors(the colors of the edges and the weights)
+    '''
     newdata= dict()
     count=0
     linkl= linkLag + str(count)
@@ -99,9 +123,9 @@ def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
     
         for edge in newdata[val]:
             if edges.get((edge['source'], edge['target'])):
-                edges[(edge['source'], edge['target'])].append({'weight':edge['weight'], 'lags':val[len(valLag):]})
+                edges[(edge['source'], edge['target'])].append({'weight':edge['weight'], 'lags':val[len(valLag):], 'arrow_color': '#ffffff'})
             else:
-                edges[(edge['source'], edge['target'])]= [{'weight':edge['weight'], 'lags':val[len(valLag):]}]
+                edges[(edge['source'], edge['target'])]= [{'weight':edge['weight'], 'lags':val[len(valLag):], 'arrow_color': '#ffffff'}]
 
     
     for edge in edges:
@@ -118,10 +142,7 @@ def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
     for edge in digraphdict['graph']['edges']:
         edge['metadata']['color']= edge_colors2[edge['metadata']['color']]
 
-    edge_colors= dict()
-    edge_colors.update(edge_colors1)
-    edge_colors.update(edge_colors2)
-    return graphdict, digraphdict, edge_colors
+    return graphdict, digraphdict, {**edge_colors1, **edge_colors2}
 
 
 
@@ -129,60 +150,50 @@ def get_nodes_graph(G: dict, nodes: list):
     '''
     Get a subgraph of G containing only the nodes in nodes
     :param G: Graph
-    :type G: Graph
     :param nodes: List of nodes
-    :type nodes: list
     :return: Subgraph
-    :rtype: Graph
     '''
-    if G['graph']['directed']:
-        newG = {
-            'graph': {
-                'metadata': {},
-                'directed': True,
-                'nodes': {},
-                'edges': [],
-            }
+    newG = {
+        'graph': {
+            'metadata': {},
+            'directed': G['graph']['directed'],
+            'nodes': {},
+            'edges': [],
         }
-        for node in G['graph']['nodes']:
-            if node in nodes:
-                newG['graph']['nodes'][node]= G['graph']['nodes'][node]
+    }
+    for node in G['graph']['nodes']:
+        if node in nodes:
+            newG['graph']['nodes'][node]= G['graph']['nodes'][node]
 
-        for edge in G['graph']['edges']:
-            if newG['graph']['nodes'].get(edge['source']):
-                newG['graph']['edges'].append(edge)
-                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
-                newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
-    
-    else:
-        newG = {
-            'graph': {
-                'metadata': {},
-                'directed': False,
-                'nodes': {},
-                'edges': [],
-            }
-        }
-        for node in G['graph']['nodes']:
-            if node in nodes:
-                newG['graph']['nodes'][node]= G['graph']['nodes'][node]
-
-        for edge in G['graph']['edges']:
-            if edge['source'] in nodes:
-                newG['graph']['edges'].append(edge)
-                newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
-                newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
+    for edge in G['graph']['edges']:
+        if edge['source'] in nodes:
+            newG['graph']['edges'].append(edge)
+            newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
+            newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]
 
     return newG
 
 
 
 def get_new_names(rename_file: str) -> dict:
+    '''
+    Get a dict with the new names of the nodes
+    :param rename_file: Path to the file with the new names
+    :return: Dict with the new names
+    '''
     #todo: get .mat of new names
     #todo: return a dict with {<old name>: <new name>}
     return {i:i for i in range(1, 361)}
 
 def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
+    '''
+    Get the graphs from a .mat or .json file
+    :param file: Path to the file
+    :param linkLag: Name of the link lag
+    :param valLag: Name of the value lag
+    :param rename_file: Path to the file with the new names
+    :return: Dict with the graphs
+    '''
     _, extension= path.splitext(file.name)
 
     if extension == '.mat':
@@ -199,7 +210,6 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
 
 
 def add_colorbar(colors: list):
-
     colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
     graph_dir= realpath(join(data_dir, 'graph.png'))
 
