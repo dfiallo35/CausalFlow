@@ -28,7 +28,16 @@ def load_json(file:str):
     :param file: path to json file
     :return: dict
     '''
-    data = json.load(open(file))
+    data :dict() = json.load(open(file))
+    return data
+
+def load_json_graph(file:str):
+    '''
+    Load json file
+    :param file: path to json file
+    :return: dict
+    '''
+    data :dict() = json.load(file)
     return data
 
 def load_mat(file:str):
@@ -147,33 +156,54 @@ def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
 
 def save_json_data(graphdict:dict, digraphdict:dict, file:str):
     data = dict()
-    graphdict_save= graphdict['graph']
-    graphdict_save.pop('metadata')
-    digraphdict_save= digraphdict['graph']
-    digraphdict_save.pop('metadata')
-    data['graph']= graphdict_save
-    data['digraph']= digraphdict_save
+    # graphdict_save= graphdict['graph']
+    # graphdict_save.pop('metadata')
+    # digraphdict_save= digraphdict['graph']
+    # digraphdict_save.pop('metadata')
+    data['graph']= graphdict
+    data['digraph']= digraphdict
     save_json(file, data)
 
 
-def get_json_data(data:dict):
+def verify_node(graphdict:dict,node:str):
+    """verifies that each node has the necessary properties to build the graph"""
+    return graphdict["graph"]["nodes"][node]["metadata"].keys() == ["border_color", "border_size", "color", "label", "opacity", "title"]
 
-    try:        
-        graphdict=data['graph']
-        digraphdict=data['digraph']
-        for node in graphdict['nodes']:...
-        for node in digraphdict['nodes']:...
-        for edge in graphdict['edges']:...
-        for edge in digraphdict['edges']:...
-        edge_colors = [graphdict['edges'][i]['metadata']['color'] for i in range(len(graphdict['edges']))]
-        edge_colors.append([digraphdict['edges'][i]['metadata']['color'] for i in range(len(digraphdict['edges']))])     
+
+
+
+def verify_edge(graphdict:dict,edge:int):
+    """verifies that each edge has the necessary properties to build the graph"""
+    return graphdict["graph"]["edges"][edge]["metadata"].keys() == ["color", "hover", "label"] and graphdict["graph"]["edges"][edge].keys()== [ "metadata", "source", "target"]
+
+
+
+def get_json_data(data:dict):
+    """gets the graphs from the json file"""
+    edge_colors=[]
+    # try:        
+        
+    graphdict=data['graph']
+    digraphdict=data['digraph']
+
+    for node in graphdict["graph"]['nodes']:
+        verify_node(graphdict,node)
+    for node in digraphdict["graph"]['nodes']:
+        verify_node(digraphdict,node)
+    for i in range(len(graphdict["graph"]['edges'])): 
+        verify_edge(graphdict,i)
+    for i in range(len(digraphdict["graph"]['edges'])): 
+        verify_edge(digraphdict,i)
     
-    except:
-        print("El archivo .json no contiene un grafo válido")
+    edge_colors1 = {graphdict["graph"]['edges'][i]['metadata']['hover']:graphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(graphdict["graph"]['edges']))}
+    edge_colors2 = {graphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
+    
+    # except:
+    #     print("El archivo .json no contiene un grafo válido")
     # edge_colors = [graphdict['edges'][i]['metadata']['color'] for i in range(len(graphdict['edges']))]
     # edge_colors.append([digraphdict['edges'][i]['metadata']['color'] for i in range(len(digraphdict['edges']))])     
     
-    return graphdict, digraphdict, edge_colors
+    return graphdict, digraphdict, {**edge_colors1, **edge_colors2}
 
 
 
@@ -234,12 +264,12 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
 
     if extension == '.json':
         # data= load_json(file)
-        Gdict, Gdidict, edge_colors = get_json_data(load_json(file))
+        Gdict, Gdidict, edge_colors = get_json_data(load_json_graph(file))
     
     
-    sorted_colors= sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
+    sorted_colors = sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
         #todo: add .json input
-    
+    save_json_data(Gdict, Gdidict, join(data_dir, 'graph.json'))
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Edge Colors': sorted_colors}
 
 
