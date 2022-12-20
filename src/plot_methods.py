@@ -16,7 +16,6 @@ from PIL import Image
 
 data_dir= realpath(join(dirname(__file__), 'data'))
 
-
 #todo: agregar about en sidebar
 #todo: agregarle un boton para que se pueda descargar el grafo como json
 #todo: tomar json como entrada
@@ -49,7 +48,7 @@ def save_json(file:str, data:dict):
     :param data: dict
     '''
     with open(file, 'w') as outfile:
-        json.dump(data, outfile)
+        json.dump(data, outfile, indent=4, sort_keys=True, separators=(',', ': '), )
 
 
 #todo: add new names
