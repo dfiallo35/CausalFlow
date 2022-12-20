@@ -17,8 +17,6 @@ from PIL import Image
 data_dir= realpath(join(dirname(__file__), 'data'))
 
 #todo: agregar about en sidebar
-#todo: agregarle un boton para que se pueda descargar el grafo como json
-#todo: tomar json como entrada
 #todo: investigar sobre la representacion con forma de cerebro
 
 
@@ -212,7 +210,7 @@ def get_nodes_graph(G: dict, nodes: list):
     Get a subgraph of G containing only the nodes in nodes
     :param G: Graph
     :param nodes: List of nodes
-    :return: Subgraph
+    :return: Subgraph of the nodes list
     '''
     newG = {
         'graph': {
@@ -253,7 +251,7 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     :param linkLag: Name of the link lag
     :param valLag: Name of the value lag
     :param rename_file: Path to the file with the new names
-    :return: Dict with the graphs
+    :return: {'Gdict': <graphdict>, 'Gdidict': <digraphdict>, 'edge_colors': <edge_colors>'}
     '''
     _, extension= path.splitext(file.name)
 
@@ -274,6 +272,10 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
 
 
 def add_colorbar(colors: list):
+    '''
+    Add a colorbar to the graph
+    :param colors: List of colors
+    '''
     colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
     graph_dir= realpath(join(data_dir, 'graph.png'))
 
@@ -303,6 +305,11 @@ def add_colorbar(colors: list):
 
 
 def brain_3d_graph(G: dict):
+    '''
+    Get a 3d graph of the brain
+    :param G: Graph dict
+    :return: Graph dict
+    '''
     newG= {
         'graph': {
             'nodes': {},

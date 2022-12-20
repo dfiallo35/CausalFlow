@@ -51,16 +51,24 @@ class Visual():
 
 
     def initial_text(self):
-        # Title and description
+        '''
+        Initial text
+        '''
         st.title('Construction of causal graphs')
 
     def generate_graphs(self):
+        '''
+        Generate the graphs from the file
+        '''
         graphs= get_graphs(self.file, 'linkLag', 'vallag')
         self.G= graphs['Gdict']
         self.Gdi= graphs['Gdidict']
         self.edge_colors= graphs['Edge Colors']
 
     def make_sidebar(self):
+        '''
+        Make the sidebar
+        '''
         st.sidebar
         st.sidebar.title('Graph options')
         self.graph_type= st.sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
@@ -72,6 +80,9 @@ class Visual():
         )
     
     def make_colorbar_graph(self):
+        '''
+        Put the colorbar options in the sidebar
+        '''
         if self.file:
             cb= st.sidebar.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
             if cb:
@@ -88,6 +99,9 @@ class Visual():
                                             mime='image/jpg')
 
     def gravis_graph(self, G: dict, **args):
+        '''
+        gravis plot with d3 layout
+        '''
         with st.expander('Graphviz Plott(entire graph)'):
             graph=gv.d3(G,
                     use_y_positioning_force=True,
@@ -98,6 +112,9 @@ class Visual():
             components.html(graph.to_html(), height=500)
     
     def gravis_independent_nodes(self, G: dict, **args):
+        '''
+        gravis plot with independent nodes and d3 layout
+        '''
         with st.expander('Graphviz Plott(independent nodes)'):
             nodes= st.multiselect('Select nodes', sorted([node for node in G['graph']['nodes']]))
             graph= get_nodes_graph(G, nodes)
@@ -112,6 +129,9 @@ class Visual():
 
     #check: spring constant
     def gravis_vis(self, G: dict, **args):
+        '''
+        gravis plot with vis layout
+        '''
         with st.expander('Graphviz Vis(entire graph)'):
             graph=gv.vis(G,
                     edge_size_factor=4,
@@ -131,6 +151,9 @@ class Visual():
             components.html(graph.to_html(), height=500)
 
     def gravis_vis_independent_nodes(self, G: dict, **args):
+        '''
+        gravis plot with independent nodes and vis layout
+        '''
         with st.expander('Graphviz Vis(independent nodes)'):
             nodes= st.multiselect('Select nodes', sorted([node for node in G['graph']['nodes']]))
             graph= get_nodes_graph(G, nodes)
@@ -155,6 +178,9 @@ class Visual():
 
 
     def gravis_three(self, G: dict, **args):
+        '''
+        gravis plot with three layout
+        '''
         with st.expander('Graphviz Three(entire graph)'):
             graph=gv.three(G,
                     use_y_positioning_force=True,
