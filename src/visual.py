@@ -14,12 +14,7 @@ class Visual():
 
         if self.file:
             self.generate_graphs()
-            cb= self.empty_uploader.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
-            if cb:
-                pic= Image.open(cb)
-                pic.save(join(data_dir, 'graph.png'))
-                add_colorbar(self.edge_colors)
-            
+            self.make_colorbar_graph()
 
             if self.graph_type == 'Graph':
                 st.markdown('### Entire Graph')
@@ -32,7 +27,7 @@ class Visual():
                 self.gravis_independent_nodes(self.G)
 
                 st.markdown('### Entire Directed Graph Indepedent Nodes')
-                self.gravis_independent_nodes(self.Gdi, show_edge_label=True)
+                self.gravis_independent_nodes(self.Gdi, show_edge_label=True, links_force_distance=100, edge_curvature=0.4)
 
             if self.graph_type == 'Complex Graph':
                 st.markdown('### Entire Graph')
@@ -45,7 +40,7 @@ class Visual():
                 self.gravis_vis_independent_nodes(self.G)
 
                 st.markdown('### Entire Directed Graph Indepedent Nodes')
-                self.gravis_vis_independent_nodes(self.Gdi)
+                self.gravis_vis_independent_nodes(self.Gdi, show_edge_label=True, edge_curvature=0.4)
 
             if self.graph_type == '3D Graph':
                 st.markdown('### Brain Graph')
@@ -53,7 +48,6 @@ class Visual():
 
                 st.markdown('### Brain Directed Graph')
                 self.gravis_three(brain_3d_graph(self.Gdi), layout_algorithm_active=False)
-
 
 
     def initial_text(self):
@@ -69,9 +63,29 @@ class Visual():
     def make_sidebar(self):
         st.sidebar
         st.sidebar.title('Graph options')
-        self.file= st.sidebar.file_uploader('Select a file', type=['mat', 'json'])
         self.graph_type= st.sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
-        self.empty_uploader= st.sidebar.empty()
+        self.file= st.sidebar.file_uploader('Select a file', type=['mat', 'json'])
+        st.sidebar.download_button(label='Save as .json',
+                                data= open(join(data_dir, 'graph.json'), 'rb'),
+                                file_name='graph.json',
+                                mime='application/json'
+        )
+    
+    def make_colorbar_graph(self):
+        if self.file:
+            cb= st.sidebar.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
+            if cb:
+                download_sb= st.sidebar.empty()
+                pic= Image.open(cb)
+                pic.save(join(data_dir, 'graph.png'))
+                add_colorbar(self.edge_colors)
+
+                st.sidebar.image(Image.open(join(data_dir, 'graph_colorbar.jpg')), caption='ColorBar Graph', use_column_width=True)
+                with open(join(data_dir, 'graph_colorbar.jpg'), 'rb') as img:
+                    download_sb.download_button(label='Download ColorBar Graph',
+                                            data= img,
+                                            file_name='graph_colorbar.jpg',
+                                            mime='image/jpg')
 
     def gravis_graph(self, G: dict, **args):
         with st.expander('Graphviz Plott(entire graph)'):
@@ -100,14 +114,18 @@ class Visual():
     def gravis_vis(self, G: dict, **args):
         with st.expander('Graphviz Vis(entire graph)'):
             graph=gv.vis(G,
-                    edge_size_factor=2,
+                    edge_size_factor=4,
                     edge_label_data_source='label',
-                    central_gravity=1.5,
+                    central_gravity=2,
                     node_label_size_factor=2.5,
                     avoid_overlap=1,
-                    layout_algorithm='hierarchicalRepulsion',
-                    spring_constant=0,
+                    layout_algorithm='forceAtlas2Based',
+                    spring_constant=0.1,
                     node_size_factor=2.5,
+                    edge_label_size_factor=3,
+                    show_edge_label_border=True,
+                    gravitational_constant=-650,
+                    spring_length=100,
                     **args)
             
             components.html(graph.to_html(), height=500)
@@ -118,14 +136,18 @@ class Visual():
             graph= get_nodes_graph(G, nodes)
 
             graph=gv.vis(graph,
-                    edge_size_factor=2,
+                    edge_size_factor=4,
                     edge_label_data_source='label',
-                    central_gravity=1.5,
+                    central_gravity=2,
                     node_label_size_factor=2.5,
                     avoid_overlap=1,
-                    layout_algorithm='hierarchicalRepulsion',
-                    spring_constant=0,
+                    layout_algorithm='forceAtlas2Based',
+                    spring_constant=0.1,
                     node_size_factor=2.5,
+                    edge_label_size_factor=3,
+                    show_edge_label_border=True,
+                    gravitational_constant=-650,
+                    spring_length=100,
                     **args)
             
             components.html(graph.to_html(), height=500)
