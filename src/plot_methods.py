@@ -1,6 +1,3 @@
-import networkx as nx
-from networkx import Graph
-
 from scipy.io import loadmat
 
 import gravis as gv
@@ -20,60 +17,10 @@ from PIL import Image
 data_dir= realpath(join(dirname(__file__), 'data'))
 
 
-#fix: escala de colores de to_hexa_rgb
-#fix: colorbar
-
-#todo: agregarle nombre a los nodos
-#todo: compactar el grafo para que sea mas legible
-#todo: agregar metodos para separar los grafos en subgrafos
-
-#fix: ajustar el gravis_vis para que se vea bien en streamlit
-#fix: ajustar gravis three para que se vea bien en streamlit
-#todo: tomar diferentes tipos de archivos de entrada
-
 #todo: agregar about en sidebar
-
 #todo: agregarle un boton para que se pueda descargar el grafo como json
 #todo: tomar json como entrada
-
 #todo: investigar sobre la representacion con forma de cerebro
-
-def to_networkx_graph(data:dict):
-    if data['graph']['directed']:
-        G = nx.DiGraph()
-        for node in data['graph']['nodes']:
-            G.add_node(node,
-                    **data['graph']['nodes'][node]['metadata']
-            )
-        for edge in data['graph']['edges']:
-            G.add_edge(edge['source'], edge['target'],
-                    **edge['metadata']
-            )
-    
-    else:
-        G = nx.Graph()
-        for node in data['graph']['nodes']:
-            G.add_node(node,
-                    **data['graph']['nodes'][node]['metadata']
-            )
-        for edge in data['graph']['edges']:
-            G.add_edge(edge['source'], edge['target'],
-                    **edge['metadata']
-            )
-
-    return G
-
-#check: not tested
-def to_dict(G:Graph):
-    data = {
-        'graph': {
-            'directed': False,
-            'nodes': dict(G.nodes(data=True)),
-            'edges': list(G.edges(data=True)),
-        }
-    }
-    return data
-
 
 
 def load_json(file:str):
@@ -178,61 +125,6 @@ def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
 
 
 
-def separate_graphs(G: Graph):
-    '''
-    Separate the graph G in subgraphs
-    :param G: Graph created with networkx
-    :type G: Graph
-    :return: List of subgraphs
-    :rtype: list
-    '''
-    return [G.subgraph(c).copy() for c in nx.connected_components(G)]
-
-def merge_graphs(Glist: list):
-    '''
-    Merge a list of graphs into one graph
-    :param Gs: List of graphs
-    :type Gs: list
-    :return: Graph
-    :rtype: Graph
-    '''
-    G = nx.Graph()
-    for g in Glist:
-        G = nx.compose(G, g)
-    return G
-
-def find_biggest_graph(Glist: list):
-    '''
-    Find the biggest graph in a list of graphs
-    :param Gs: List of graphs
-    :type Gs: list
-    :return: Graph
-    :rtype: Graph
-    '''
-    Glist.sort(key=lambda x: len(x.nodes), reverse=True)
-    return Glist[0]
-
-def make_separated_graphs(G: Graph):
-    '''
-    Separate the graph G in subgraphs and return a list of graphs
-    :param G: Graph created with networkx
-    :type G: Graph
-    :return: List of subgraphs
-    :rtype: list
-    '''
-    Glist = separate_graphs(G)
-    biggest_graph: Graph = find_biggest_graph(Glist)
-    if biggest_graph.number_of_nodes() > G.number_of_nodes() / 2:
-        for graph in Glist:
-            if graph == biggest_graph:
-                Glist.remove(graph)
-        Gnew= merge_graphs(Glist)
-        return [biggest_graph, Gnew]
-    
-    return G
-
-
-
 def get_nodes_graph(G: dict, nodes: list):
     '''
     Get a subgraph of G containing only the nodes in nodes
@@ -288,14 +180,13 @@ def get_nodes_graph(G: dict, nodes: list):
 def get_new_names(rename_file: str) -> dict:
     #todo: get .mat of new names
     #todo: return a dict with {<old name>: <new name>}
-    return {i:i+360 for i in range(1, 361)}
+    return {i:i for i in range(1, 361)}
 
 def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     _, extension= path.splitext(file.name)
 
     if extension == '.mat':
         Gdict, Gdidict, edge_colors = get_math_data(load_mat(file), linkLag, valLag, get_new_names(rename_file))
-        separated_graphs= make_separated_graphs(to_networkx_graph(Gdict))
         sorted_colors= sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
         
 
@@ -304,24 +195,9 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
         Gdict, Gdidict = None
         #todo: add .json input
     
-    return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Separated Graphs': separated_graphs, 'Edge Colors': sorted_colors}
+    return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Edge Colors': sorted_colors}
 
 
-def normalize_colorbar(colors: list):
-    nconunt= {
-        'n':0,
-        'p':0,
-    }
-    for c in colors:
-        if float(c[0]) > 0:
-            nconunt['p']= nconunt['p']+1
-        if float(c[0]) < 0:
-            nconunt['n']= nconunt['n']+1
-    return colors
-
-
-
-#fix: color not centered in 0
 def add_colorbar(colors: list):
 
     colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
@@ -352,7 +228,6 @@ def add_colorbar(colors: list):
 
 
 
-#todo: increse and decrease the distance between nodes
 def brain_3d_graph(G: dict):
     newG= {
         'graph': {
