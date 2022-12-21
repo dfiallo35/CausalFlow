@@ -14,6 +14,8 @@ import cv2
 from os.path import realpath, join, dirname
 from PIL import Image
 
+import numpy
+
 data_dir= realpath(join(dirname(__file__), 'data'))
 
 #todo: agregar about en sidebar
@@ -255,7 +257,8 @@ def add_colorbar(colors: list):
                 width= 1.5, height=15,
                 tick_size= 20,
                 vmin=min, vmax= max,
-                palette=cm.palettes.fromkeys(['#0000ff', '#ffc8c8', '#ff0000']),
+                palette=cm.palettes.fromkeys(['#0000ff', '#ffc4ff', '#ff0000']),
+                vis_params=[round(i, 2) for i in numpy.linspace(min, max, 7)],
                 discrete=False,
                 show_colorbar=False,
                 orientation='vertical')
