@@ -178,26 +178,33 @@ def verify_edge(graphdict:dict,edge:int):
 
 def get_json_data(data:dict):
     """gets the graphs from the json file"""
-    edge_colors=[]
-    # try:        
+    edge_colors1={}
+    edge_colors2={}
+    graphdict={}
+    digraphdict={}
+    
+    try:        
         
-    graphdict=data['graph']
-    digraphdict=data['digraph']
-
-    for node in graphdict["graph"]['nodes']:
-        verify_node(graphdict,node)
-    for node in digraphdict["graph"]['nodes']:
-        verify_node(digraphdict,node)
-    for i in range(len(graphdict["graph"]['edges'])): 
-        verify_edge(graphdict,i)
-    for i in range(len(digraphdict["graph"]['edges'])): 
-        verify_edge(digraphdict,i)
+        graphdict=data['graph']
+        digraphdict=data['digraph']
+        for node in graphdict["graph"]['nodes']:
+            if not verify_node(graphdict,node):
+                raise ValueError('Nodes are not valid')
+        for node in digraphdict["graph"]['nodes']:
+            if not verify_node(digraphdict,node):
+                raise ValueError('Nodes are not valid')
+        for i in range(len(graphdict["graph"]['edges'])):
+            if not verify_edge(graphdict,i):
+                raise ValueError('Edges are not valid')
+        for i in range(len(digraphdict["graph"]['edges'])): 
+            if not verify_edge(digraphdict,i):
+                raise ValueError('Edges are not valid')
+        
+        edge_colors1 = {graphdict["graph"]['edges'][i]['metadata']['hover']:graphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(graphdict["graph"]['edges']))}
+        edge_colors2 = {graphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
     
-    edge_colors1 = {graphdict["graph"]['edges'][i]['metadata']['hover']:graphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(graphdict["graph"]['edges']))}
-    edge_colors2 = {graphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
-    
-    # except:
-    #     print("El archivo .json no contiene un grafo válido")
+    except:
+        print("El archivo .json no contiene un grafo válido")
     # edge_colors = [graphdict['edges'][i]['metadata']['color'] for i in range(len(graphdict['edges']))]
     # edge_colors.append([digraphdict['edges'][i]['metadata']['color'] for i in range(len(digraphdict['edges']))])     
     
