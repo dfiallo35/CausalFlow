@@ -154,10 +154,6 @@ def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
 
 def save_json_data(graphdict:dict, digraphdict:dict, file:str):
     data = dict()
-    # graphdict_save= graphdict['graph']
-    # graphdict_save.pop('metadata')
-    # digraphdict_save= digraphdict['graph']
-    # digraphdict_save.pop('metadata')
     data['graph']= graphdict
     data['digraph']= digraphdict
     save_json(file, data)
@@ -204,9 +200,7 @@ def get_json_data(data:dict):
         edge_colors2 = {graphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
     
     except:
-        print("El archivo .json no contiene un grafo válido")
-    # edge_colors = [graphdict['edges'][i]['metadata']['color'] for i in range(len(graphdict['edges']))]
-    # edge_colors.append([digraphdict['edges'][i]['metadata']['color'] for i in range(len(digraphdict['edges']))])     
+        print("El archivo .json no contiene un grafo válido")  
     
     return graphdict, digraphdict, {**edge_colors1, **edge_colors2}
 
@@ -264,16 +258,13 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
 
     if extension == '.mat':
         Gdict, Gdidict, edge_colors = get_math_data(load_mat(file), linkLag, valLag, get_new_names(rename_file))
-        #sorted_colors= sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
         
 
     if extension == '.json':
-        # data= load_json(file)
         Gdict, Gdidict, edge_colors = get_json_data(load_json_graph(file))
     
-    
     sorted_colors = sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
-        #todo: add .json input
+
     save_json_data(Gdict, Gdidict, join(data_dir, 'graph.json'))
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Edge Colors': sorted_colors}
 
