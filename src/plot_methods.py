@@ -180,21 +180,17 @@ def get_json_data(data:dict):
     digraphdict={}
     
     try:        
-        
+    
         graphdict=data['graph']
         digraphdict=data['digraph']
         for node in graphdict["graph"]['nodes']:
-            if not verify_node(graphdict,node):
-                raise ValueError('Nodes are not valid')
+            verify_node(graphdict,node)
         for node in digraphdict["graph"]['nodes']:
-            if not verify_node(digraphdict,node):
-                raise ValueError('Nodes are not valid')
+            verify_node(digraphdict,node)
         for i in range(len(graphdict["graph"]['edges'])):
-            if not verify_edge(graphdict,i):
-                raise ValueError('Edges are not valid')
+            verify_edge(graphdict,i)
         for i in range(len(digraphdict["graph"]['edges'])): 
-            if not verify_edge(digraphdict,i):
-                raise ValueError('Edges are not valid')
+            verify_edge(digraphdict,i)
         
         edge_colors1 = {graphdict["graph"]['edges'][i]['metadata']['hover']:graphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(graphdict["graph"]['edges']))}
         edge_colors2 = {graphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
