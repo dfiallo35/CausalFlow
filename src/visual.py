@@ -73,7 +73,7 @@ class Visual():
         st.sidebar.title('Graph options')
         self.graph_type= st.sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
         self.file= st.sidebar.file_uploader('Select a file', type=['mat', 'json'])
-        st.sidebar.download_button(label='Save as .json',
+        st.sidebar.download_button(label='Download .json',
                                 data= open(join(data_dir, 'graph.json'), 'rb'),
                                 file_name='graph.json',
                                 mime='application/json'
