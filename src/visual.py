@@ -7,6 +7,8 @@ st.set_page_config(
 
 class Visual():
     file=None
+    rename_file=None
+    pos3d_file=None
 
     def run(self):
         self.initial_text()
@@ -18,33 +20,33 @@ class Visual():
 
             if self.graph_type == 'Graph':
                 st.markdown('### Entire Graph')
-                self.gravis_graph(self.G, show_edge_label=True)
+                self.gravis_graph(self.G)
 
                 st.markdown('### Entire Directed Graph')
-                self.gravis_graph(self.Gdi, show_edge_label=True, links_force_distance=100, edge_curvature=0.4)
+                self.gravis_graph(self.Gdi, links_force_distance=100, edge_curvature=0.4)
 
                 st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_independent_nodes(self.G)
 
                 st.markdown('### Entire Directed Graph Indepedent Nodes')
-                self.gravis_independent_nodes(self.Gdi, show_edge_label=True, links_force_distance=100, edge_curvature=0.4)
+                self.gravis_independent_nodes(self.Gdi, links_force_distance=100, edge_curvature=0.4)
 
             if self.graph_type == 'Complex Graph':
                 st.markdown('### Entire Graph')
                 self.gravis_vis(self.G)
 
                 st.markdown('### Entire Directed Graph')
-                self.gravis_vis(self.Gdi, show_edge_label=True, edge_curvature=0.4)
+                self.gravis_vis(self.Gdi, edge_curvature=0.4)
 
                 st.markdown('### Entire Graph Indepedent Nodes')
                 self.gravis_vis_independent_nodes(self.G)
 
                 st.markdown('### Entire Directed Graph Indepedent Nodes')
-                self.gravis_vis_independent_nodes(self.Gdi, show_edge_label=True, edge_curvature=0.4)
+                self.gravis_vis_independent_nodes(self.Gdi, edge_curvature=0.4)
 
             if self.graph_type == '3D Graph':
                 st.markdown('### Brain Graph')
-                self.gravis_three(brain_3d_graph(self.G), layout_algorithm_active=False,)
+                self.gravis_three(brain_3d_graph(self.G), layout_algorithm_active=False)
 
                 st.markdown('### Brain Directed Graph')
                 self.gravis_three(brain_3d_graph(self.Gdi), layout_algorithm_active=False)
@@ -60,7 +62,7 @@ class Visual():
         '''
         Generate the graphs from the file
         '''
-        graphs= get_graphs(self.file, 'linkLag', 'vallag')
+        graphs= get_graphs(self.file, 'linkLag', 'vallag', self.rename_file)
         self.G= graphs['Gdict']
         self.Gdi= graphs['Gdidict']
         self.edge_colors= graphs['Edge Colors']
@@ -69,34 +71,56 @@ class Visual():
         '''
         Make the sidebar
         '''
-        st.sidebar
         st.sidebar.title('Graph options')
         self.graph_type= st.sidebar.selectbox('Select a Graph Type', ['Graph', 'Complex Graph', '3D Graph'])
-        self.file= st.sidebar.file_uploader('Select a file', type=['mat', 'json'])
-        st.sidebar.download_button(label='Download .json',
-                                data= open(join(data_dir, 'graph.json'), 'rb'),
-                                file_name='graph.json',
-                                mime='application/json'
-        )
-    
+
+        tab1, tab2, tab3, self.colorbar_tab= st.sidebar.tabs(['Graph', 'Rename', '3D Positions', 'ColorBar'])
+        with tab1:
+            self.file= st.file_uploader('Select the Graph File', type=['mat', 'json'])
+            if self.file:
+                st.download_button(label='Download .json',
+                                    data= open(join(data_dir, 'graph.json'), 'rb'),
+                                    file_name='graph.json',
+                                    mime='application/json'
+                )
+        with tab2:
+            if self.file:
+                a=1
+                self.rename_file= st.file_uploader('Select the Rename File', type=['json'])
+            else:
+                st.error('Input the Graph')
+        with tab3:
+            if self.file:
+                a=1
+                self.pos3d_file= st.file_uploader('Select the 3D Positions File', type=['json'])
+            else:
+                st.error('Input the Graph')
+        if not self.file:
+            with self.colorbar_tab:
+                st.error('Input the Graph')
+
+
     def make_colorbar_graph(self):
         '''
         Put the colorbar options in the sidebar
         '''
         if self.file:
-            cb= st.sidebar.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
-            if cb:
-                download_sb= st.sidebar.empty()
-                pic= Image.open(cb)
-                pic.save(join(data_dir, 'graph.png'))
-                add_colorbar(self.edge_colors)
+            print(1)
+            with self.colorbar_tab:
+                cb= st.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
+                if cb:
+                    download_sb= st.empty()
+                    pic= Image.open(cb)
+                    pic.save(join(data_dir, 'graph.png'))
+                    add_colorbar(self.edge_colors)
 
-                st.sidebar.image(Image.open(join(data_dir, 'graph_colorbar.jpg')), caption='ColorBar Graph', use_column_width=True)
-                with open(join(data_dir, 'graph_colorbar.jpg'), 'rb') as img:
-                    download_sb.download_button(label='Download ColorBar Graph',
-                                            data= img,
-                                            file_name='graph_colorbar.jpg',
-                                            mime='image/jpg')
+                    st.image(Image.open(join(data_dir, 'graph_colorbar.jpg')), caption='ColorBar Graph', use_column_width=True)
+                    with open(join(data_dir, 'graph_colorbar.jpg'), 'rb') as img:
+                        download_sb.download_button(label='Download ColorBar Graph',
+                                                data= img,
+                                                file_name='graph_colorbar.jpg',
+                                                mime='image/jpg')
+
 
     def gravis_graph(self, G: dict, **args):
         '''
@@ -109,6 +133,9 @@ class Visual():
                     edge_size_factor=2,
                     edge_label_data_source='label',
                     node_label_size_factor=0.75,
+                    node_label_data_source='label',
+                    node_label_size_factor=0.75,
+                    show_edge_label=True,
                     **args)
             components.html(graph.to_html(), height=500)
     
@@ -125,6 +152,7 @@ class Visual():
                     edge_size_factor=2,
                     edge_label_data_source='label',
                     node_label_size_factor=0.75,
+                    show_edge_label=True,
                     **args)
             components.html(graph.to_html(), height=500)
 
@@ -148,6 +176,7 @@ class Visual():
                     show_edge_label_border=True,
                     gravitational_constant=-650,
                     spring_length=100,
+                    show_edge_label=True,
                     **args)
             
             components.html(graph.to_html(), height=500)
@@ -173,6 +202,7 @@ class Visual():
                     show_edge_label_border=True,
                     gravitational_constant=-650,
                     spring_length=100,
+                    show_edge_label=True,
                     **args)
             
             components.html(graph.to_html(), height=500)
