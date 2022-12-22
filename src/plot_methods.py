@@ -58,7 +58,7 @@ def save_json(file:str, data:dict):
         json.dump(data, outfile, indent=4, sort_keys=True, separators=(',', ': '), )
 
 
-#todo: add new names
+
 def get_math_data(data:dict, linkLag:str, valLag:str, new_names: dict):
     '''
     Get data from mat file as a dict and make it compatible with gravis
@@ -241,10 +241,10 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     save_json_data(Gdict, Gdidict, join(data_dir, 'graph.json'))
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Edge Colors': sorted_colors}
 
-print([(i,j) for i,j in enumerate(['a', 'b'])])
+
 
 #fix:
-def brain_3d_graph(G: dict):
+def brain_3d_graph(G: dict, new_pos: str):
     '''
     Get a 3d graph of the brain
     :param G: Graph dict
@@ -252,13 +252,14 @@ def brain_3d_graph(G: dict):
     '''
     newG= {
         'graph': {
+            'directed': G['graph']['directed'],
+            'metadata': {'node_color': 'gray', 'node_opacity': 0.7, 'node_border_size': 2, 'node_border_color': 'black'},
             'nodes': {},
             'edges': [],
         }
     }
-    newG['graph']['metadata']= G['graph']['metadata']
-    newG['graph']['directed']= G['graph']['directed']
-    data= load_json(join(data_dir, 'brain_3d.json'))
+    data= load_json_file(new_pos)
+
     for node in G['graph']['nodes']:
         newG['graph']['nodes'][node]= G['graph']['nodes'][node]
         newG['graph']['nodes'][node]['metadata']['x']= float(data[str(node)]['x'])*3
@@ -278,18 +279,18 @@ def get_nodes_graph(G: dict, nodes: list):
     '''
     newG = {
         'graph': {
-            'metadata': {},
+            'metadata': {'node_color': 'gray', 'node_opacity': 0.7, 'node_border_size': 2, 'node_border_color': 'black'},
             'directed': G['graph']['directed'],
             'nodes': {},
             'edges': [],
         }
     }
-    for node in G['graph']['nodes']:
-        if node in nodes:
-            newG['graph']['nodes'][node]= G['graph']['nodes'][node]
+    for key, node in zip(G['graph']['nodes'].keys(), G['graph']['nodes'].values()):
+        if node['metadata']['label'] in nodes:
+            newG['graph']['nodes'][key]= G['graph']['nodes'][key]
 
     for edge in G['graph']['edges']:
-        if edge['source'] in nodes:
+        if G['graph']['nodes'][int(edge['source'])]['metadata']['label'] in nodes:
             newG['graph']['edges'].append(edge)
             newG['graph']['nodes'][edge['source']]= G['graph']['nodes'][edge['source']]
             newG['graph']['nodes'][edge['target']]= G['graph']['nodes'][edge['target']]

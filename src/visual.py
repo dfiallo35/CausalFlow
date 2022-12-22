@@ -45,11 +45,14 @@ class Visual():
                 self.gravis_vis_independent_nodes(self.Gdi, edge_curvature=0.4)
 
             if self.graph_type == '3D Graph':
-                st.markdown('### Brain Graph')
-                self.gravis_three(brain_3d_graph(self.G), layout_algorithm_active=False)
+                if self.pos3d_file:
+                    st.markdown('### Brain Graph')
+                    self.gravis_three(brain_3d_graph(self.G, self.pos3d_file), layout_algorithm_active=False)
 
-                st.markdown('### Brain Directed Graph')
-                self.gravis_three(brain_3d_graph(self.Gdi), layout_algorithm_active=False)
+                    # st.markdown('### Brain Directed Graph')
+                    # self.gravis_three(brain_3d_graph(self.Gdi, self.pos3d_file), layout_algorithm_active=False)
+                else:
+                    st.error('Input the 3D Positions File')
 
 
     def initial_text(self):
@@ -105,7 +108,6 @@ class Visual():
         Put the colorbar options in the sidebar
         '''
         if self.file:
-            print(1)
             with self.colorbar_tab:
                 cb= st.file_uploader('Add ColorBar', type=['png', 'jpg', 'jpeg'])
                 if cb:
@@ -134,7 +136,6 @@ class Visual():
                     edge_label_data_source='label',
                     node_label_size_factor=0.75,
                     node_label_data_source='label',
-                    node_label_size_factor=0.75,
                     show_edge_label=True,
                     **args)
             components.html(graph.to_html(), height=500)
@@ -144,7 +145,7 @@ class Visual():
         gravis plot with independent nodes and d3 layout
         '''
         with st.expander('Graphviz Plott(independent nodes)'):
-            nodes= st.multiselect('Select nodes', sorted([node for node in G['graph']['nodes']]))
+            nodes= st.multiselect('Select nodes', sorted([node['metadata']['label'] for node in G['graph']['nodes'].values()]))
             graph= get_nodes_graph(G, nodes)
             graph=gv.d3(graph,
                     use_y_positioning_force=True,
@@ -153,6 +154,7 @@ class Visual():
                     edge_label_data_source='label',
                     node_label_size_factor=0.75,
                     show_edge_label=True,
+                    node_label_data_source='label',
                     **args)
             components.html(graph.to_html(), height=500)
 
