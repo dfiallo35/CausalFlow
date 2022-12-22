@@ -373,12 +373,13 @@ def add_colorbar(color_list: list):
 
     save_colorbar(colorbar_dir,
                 width= 1*x, height=10*x,
-                tick_size= 20,
+                tick_size= int(14*x),
                 vmin=min, vmax= max,
                 palette=cm.palettes.fromkeys([i for i in cl.values()]),
                 discrete=False,
                 show_colorbar=False,
-                orientation='vertical')
+                orientation='vertical',
+                label_size= int(14*x),)
     
     colorbar_img = cv2.imread(colorbar_dir)
     ch, cw, _ = colorbar_img.shape
