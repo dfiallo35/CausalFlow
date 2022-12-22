@@ -267,7 +267,7 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
     return {'Gdict': Gdict, 'Gdidict': Gdidict, 'Edge Colors': sorted_colors}
 
 
-def add_colorbar(colors: list):
+def add_colorbar(color_list: list):
     '''
     Add a colorbar to the graph
     :param colors: List of colors
@@ -275,22 +275,23 @@ def add_colorbar(colors: list):
     colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
     graph_dir= realpath(join(data_dir, 'graph.png'))
 
-    max, min = find_max_min_w([color[0] for color in colors])
+    max, min = find_max_min_w([color[0] for color in color_list])
+    cl= colors(numpy.linspace(min, max, 10))
+
+    graph_img= cv2.imread(graph_dir)
+    gh, gw, _ = graph_img.shape
+    x= gh/ (800*2)
 
     save_colorbar(colorbar_dir,
-                width= 1.5, height=15,
+                width= 1*x, height=10*x,
                 tick_size= 20,
                 vmin=min, vmax= max,
-                palette=cm.palettes.fromkeys(['#0000ff', '#ffc4ff', '#ff0000']),
-                vis_params=[round(i, 2) for i in numpy.linspace(min, max, 7)],
+                palette=cm.palettes.fromkeys([i for i in cl.values()]),
                 discrete=False,
                 show_colorbar=False,
                 orientation='vertical')
     
-    graph_img= cv2.imread(graph_dir)
     colorbar_img = cv2.imread(colorbar_dir)
-
-    gh, gw, _ = graph_img.shape
     ch, cw, _ = colorbar_img.shape
 
     for a, x in zip(range(gh-ch, gh), range(0, ch)):
@@ -300,7 +301,7 @@ def add_colorbar(colors: list):
     cv2.imwrite(join(data_dir,'graph_colorbar.jpg'), graph_img)
 
 
-
+#fix:
 def brain_3d_graph(G: dict):
     '''
     Get a 3d graph of the brain
