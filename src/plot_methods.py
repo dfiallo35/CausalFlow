@@ -182,7 +182,7 @@ def get_json_data(data:dict):
     graphdict={}
     digraphdict={}
     
-    try:        
+    try:
     
         graphdict=data['graph']
         digraphdict=data['digraph']
@@ -196,7 +196,7 @@ def get_json_data(data:dict):
             verify_edge(digraphdict,i)
         
         edge_colors1 = {graphdict["graph"]['edges'][i]['metadata']['hover']:graphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(graphdict["graph"]['edges']))}
-        edge_colors2 = {graphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
+        edge_colors2 = {digraphdict["graph"]['edges'][i]['metadata']['hover']:digraphdict["graph"]['edges'][i]['metadata']['color'] for i in range(len(digraphdict["graph"]['edges']))}
     
     except:
         print("El archivo .json no contiene un grafo válido")  
@@ -235,6 +235,11 @@ def get_graphs(file:str, linkLag:str, valLag:str, rename_file:str=None):
 
     if extension == '.json':
         Gdict, Gdidict, edge_colors = get_json_data(load_json_file(file))
+
+        for node in [i for i in Gdict['graph']['nodes'].keys()]:
+            Gdict['graph']['nodes'][int(node)] = Gdict['graph']['nodes'].pop(node)
+        for node in [i for i in Gdidict['graph']['nodes'].keys()]:
+            Gdidict['graph']['nodes'][int(node)] = Gdidict['graph']['nodes'].pop(node)
     
     sorted_colors = sorted([(round(float(color), 4), edge_colors[color]) for color in edge_colors], key=lambda x: x[0])
 
