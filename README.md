@@ -1,7 +1,7 @@
 # Causal Graphs
 
 ### How to run the code
-To run the code, you must first install the python dependencies found in requirements.txt with `pip install -r requirements.txt`. Then execute `stramlit run visual.py` with the terminal at the address of the src folder, in case of being in another address you must include the address in the command `stramlit run <address>visual.py`, then the visual interface is displayed in the default browser.
+To run the code, you must first install the python dependencies found in requirements.txt with `pip install -r requirements.txt`. Then execute `streamlit run visual.py` with the terminal at the address of the src folder, in case of being in another address you must include the address in the command `stramlit run <address>visual.py`, then the visual interface is displayed in the default browser.
 
 ### Website
 
