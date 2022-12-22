@@ -140,6 +140,7 @@ class Visual():
                     node_label_size_factor=0.75,
                     node_label_data_source='label',
                     show_edge_label=True,
+                    many_body_force_strength=-100,
                     **args)
             components.html(graph.to_html(), height=500)
     
@@ -158,6 +159,7 @@ class Visual():
                     node_label_size_factor=0.75,
                     show_edge_label=True,
                     node_label_data_source='label',
+                    many_body_force_strength=-100,
                     **args)
             components.html(graph.to_html(), height=500)
 
@@ -225,7 +227,7 @@ class Visual():
                     use_z_positioning_force=True,
                     edge_size_factor=2,
                     edge_label_data_source='label',
-                    
+                    node_label_data_source='label',
                     **args)
             components.html(graph.to_html(), height=500)
     
