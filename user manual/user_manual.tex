@@ -82,7 +82,7 @@ La interfaz visual se va a dividir en dos partes principales:
 \end{itemize}
 
 \begin{figure}[H]
-    \includegraphics[scale=0.35]{allvisual.png}
+    \includegraphics[scale=0.26]{visual.png}
 \end{figure}	
 
 
@@ -98,6 +98,8 @@ En esta aparece primeramente un SelectBox con 3 distintas opciones de modelo de 
 \end{itemize}
 
 \subsection*{Entrada de Datos}
+
+\subsubsection*{Graph}
 
 Se admite como entrada archivos .mat que contengan un diccionario, teniendo como llaves linkLag y vallag enumerados desde 0 hasta n(Ejemplo: linkval0, linkval1, linval2, ….) y teniendo como contenido la matriz correspondiente a este. También se admiten .json con el siguiente formato:
 
@@ -125,11 +127,42 @@ Se admite como entrada archivos .mat que contengan un diccionario, teniendo como
     \end{lstlisting}
 
 
-\subsection*{Descargar .json}
+\subsubsection*{Descargar .json}
 
 Botón para descargar la información de los grafos que se usa en la aplicación en formato .json.
 
-\subsection*{Agregar Barra de Color}
+
+\subsubsection*{Rename}
+
+Aquí se puede seleccioanr el archivo .json para cambiarle el nombre a los nodos. Estos deben tener el siguiente formato:
+
+\begin{lstlisting}[language=json,firstnumber=1]
+    {
+        "node id": "new name",
+    }
+\end{lstlisting}
+
+Se muestra un ejemplo en la carpeta data con el nombre de $rename\_nodes.json$.
+
+
+\subsubsection*{3D Positions}
+
+Se puede seleccionar un archivo .json para definir las posiciones espaciales de los nodos. Debe presentar el siguiente formato:
+
+\begin{lstlisting}[language=json,firstnumber=1]
+    {
+        "node id": {
+            "x": x,
+            "y": y,
+            "z": z,
+        },
+    }
+\end{lstlisting}
+
+Se muestra un ejemplo en la carpeta data con el nombre de $brain\_3d.json$.\\
+
+
+\subsubsection*{Agregar Barra de Color}
 
 Con esta opción se selecciona una de las imágenes tomadas de los grafos causales y se le agrega la barra de colores según el peso de los enlaces de los nodos. Al seleccionar la imagen aparece automáticamente una vista previa de la imagen resultante, además de un botón para descargarla.
 
@@ -156,7 +189,7 @@ Todos los modelos traen consigo a la derecha una barra con las siguientes opcion
     \item \textbf{Layaut Algorithm:} Permite variar los valores de las fisicas de los grafos, además de activar y desactivar tipos de fuerzas.
 \end{itemize}
 
-\subsection*{Graph}
+% \subsection*{Graph}
 
 
 
