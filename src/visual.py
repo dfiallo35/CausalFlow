@@ -70,6 +70,12 @@ class Visual():
         self.Gdi= graphs['Gdidict']
         self.edge_colors= graphs['Edge Colors']
 
+        self.empty_json_graph.download_button(label='Download .json',
+                                    data= open(join(data_dir, 'graph.json'), 'rb'),
+                                    file_name='graph.json',
+                                    mime='application/json'
+        )
+
     def make_sidebar(self):
         '''
         Make the sidebar
@@ -81,11 +87,8 @@ class Visual():
         with tab1:
             self.file= st.file_uploader('Select the Graph File', type=['mat', 'json'])
             if self.file:
-                st.download_button(label='Download .json',
-                                    data= open(join(data_dir, 'graph.json'), 'rb'),
-                                    file_name='graph.json',
-                                    mime='application/json'
-                )
+                self.empty_json_graph= st.empty()
+                
         with tab2:
             if self.file:
                 a=1
