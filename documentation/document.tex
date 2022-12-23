@@ -30,6 +30,10 @@
 \usepackage[pdftex]{hyperref}
 \usepackage{caption}
 \usepackage{subcaption}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
 %-----------------------------------------------------------------------------------
 % Configuración
 %-----------------------------------------------------------------------------------
@@ -38,6 +42,41 @@
 	    filecolor=black,%
 	    linkcolor=black,%
 	    urlcolor=blue}
+
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+	basicstyle=\normalfont\ttfamily,
+	numbers=left,
+	numberstyle=\scriptsize,
+	stepnumber=1,
+	numbersep=8pt,
+	showstringspaces=false,
+	breaklines=true,
+	frame=lines,
+	backgroundcolor=\color{background},
+	literate=
+		*{0}{{{\color{numb}0}}}{1}
+		{1}{{{\color{numb}1}}}{1}
+		{2}{{{\color{numb}2}}}{1}
+		{3}{{{\color{numb}3}}}{1}
+		{4}{{{\color{numb}4}}}{1}
+		{5}{{{\color{numb}5}}}{1}
+		{6}{{{\color{numb}6}}}{1}
+		{7}{{{\color{numb}7}}}{1}
+		{8}{{{\color{numb}8}}}{1}
+		{9}{{{\color{numb}9}}}{1}
+		{:}{{{\color{punct}{:}}}}{1}
+		{,}{{{\color{punct}{,}}}}{1}
+		{\{}{{{\color{delim}{\{}}}}{1}
+		{\}}{{{\color{delim}{\}}}}}{1}
+		{[}{{{\color{delim}{[}}}}{1}
+		{]}{{{\color{delim}{]}}}}{1},
+}
 
 %===================================================================================
 
@@ -197,6 +236,55 @@ Esto tuvo grandes inconvenientes porque los grafo causales, sobre todo el de con
 Buscando en el estado del arte no existía nada como esto, ninguna distribución que se hiciera a un grafo resultaba buena en todos los casos, para todo tipo de grafos, probamos con la librería networkx las diferentes distribuciones que esta tiene implementadas y ninguna de ellas cumplía nuestro objetivo, por lo que llegamos a la conclusión que crear un algoritmo que graficara cualquier grafo de la mejor manera poible para él es un ejercicio muy complicado por lo cual no se encontraba a nuestro alcance.\\
 
 Por esto nos propusimos utilizar las mejores implementaciones de dibujo de grafos que estuvieran disponibles en librerías de python para poder resolver el problema del usuario y lograr su satisfacción y comodidad.\\
+
+
+
+
+
+
+
+
+\section*{CODE}
+El proyecto se encuentra programado en su totalidad en Python. Para la graficación de los grafos causales
+se usa el módulo gravis; su nombre significa \texttt{graph visualization}, visualización de grafos,
+y como su nombre indica, está destinado a la creación de grafos interactivos en 2d y 3d.
+Usa tecnologías como \texttt{HTML}, \texttt{CSS} y \texttt{JS} para representar los grafos, apoyándose en gran medida de
+módulos como \texttt{d3.js}, \texttt{vis.js} y \texttt{three.js}( las representaciones visuales basadas en estos módulos
+se presentan en el proyecto como \texttt{Graph}, \texttt{Complex Graph} y \texttt{3D Graph} respectivamente).
+Para mostrar los resultados se usa en la interfáz visual se usa el módulo streamlit,
+tomando la información proporcionada por gravis como HTML.\\
+
+Para la representación de los grafos en el proyecto se usa el mismo formato que se usa en \texttt{gravis}, gravis JSON Graph Format(\texttt{gJGF}),
+el cual se define como \texttt{dict} en Python generándose como se muestra a continuación:
+
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+	"graph":{
+		"metadata": {},
+		"directed": bool,
+		"nodes": {},
+		"edges": []
+	}	
+}
+\end{lstlisting}
+
+
+Para la representación de los grafos se puede indicar desde el inicio las posiciones espaciales de cada nodo,
+como es el caso del \texttt{3D Graph} que presentamos con con ubicaciones reales a escala de las areas estimuladas del cerebro.
+Sin embargo en el resto de los casos se usan algoritmos apoyados en las físicas para representar los nodos.
+Usando la opción de \texttt{Many-Body Force} existen distintos tipos de fuerzas e interacciones entre los nodos y las arista,
+las cuales se pueden modificar, entre ellas: \texttt{Links Force} la cual es la fuerza que ejercen las aristas sobre los nodos
+enlazados, \texttt{Collision Force} que es la fuerza de repulsión entre nodos, \texttt{Centering Force} esta atrae a los nodos hacia el centro de la gráfica,
+\texttt{x Force} y \texttt{y Force} que son las fuerzas que atraen a los nodos hacia el eje señalado.
+En el caso de las representaciones de \texttt{Complex Graph} además de estas físicas anteriores, tambien se permiten seleccionar distintos algoritmos para la representación,
+como es el caso del algoritmo de Barnes-Hut, este divide recursivamente los $n$ cuerpos en grupos almacenándolos en octábolos, mientras que el espacio
+se subdivide recursivamente en octantes hasta que cada subdivisión tenga $0$ o $1$ cuerpos.
+\\
+
+Aplicando estas representaciones con físicas se logra una graficación más factorizada, logrando facilitar al usuario las visualización
+de los resultados, además de logar optimizar en tiempo de ejecución y procesamiento, pues los algoritmos que se usan tienen una complejidad temporal máxima de $O(n\log{n})$.\\
+
+
 
 
 \section*{Solución}
