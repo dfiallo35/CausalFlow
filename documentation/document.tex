@@ -192,7 +192,7 @@ También otro problema que presenta el usuario es que guarda cada uno de los par
 
 Al comienzo de la realización de este proyecto se tenía en mente la implementación de métodos para dibujar grafos que lograran una buena ditribución de nodos y aristas en el espacio bidimensional utilizando los conocimientos adquiridos en asignaturas como Matemática Discreta II, Estructura de Datos y Algoritmos II y Modelos de Optimización, esto dibujando el grafo en su forma maximal planar y luego ir añadiendo las aristas que falten por dibujarse  minimizando la cantidad de aristas que serían dibujadas cortando a las que ya estuvieran colocadas. \\
 
-Esto tuvo grandes inconvenientes porque los grafo causales están muy lejos de ser planares, tienen muchas aristas y a la hora de acomodar los nodos y dibujar las aristas que no formaban parte del grafo maximal planar tomado como base no se podían garantizar distrubuciones de nodos y aristas que garantizaran la correcta observación del grafo.\\
+Esto tuvo grandes inconvenientes porque los grafo causales, sobre todo el de conexiones contemporáneas, están muy lejos de ser planares, tienen muchas aristas y a la hora de acomodar los nodos y dibujar las aristas que no formaban parte del grafo maximal planar tomado como base no se podían garantizar distrubuciones de nodos y aristas que dieran lugar a la correcta observación del grafo.\\
 
 Buscando en el estado del arte no existía nada como esto, ninguna distribución que se hiciera a un grafo resultaba buena en todos los casos, para todo tipo de grafos, probamos con la librería networkx las diferentes distribuciones que esta tiene implementadas y ninguna de ellas cumplía nuestro objetivo, por lo que llegamos a la conclusión que crear un algoritmo que graficara cualquier grafo de la mejor manera poible para él es un ejercicio muy complicado por lo cual no se encontraba a nuestro alcance.\\
 
@@ -283,18 +283,6 @@ Por esto nos propusimos utilizar las mejores implementaciones de dibujo de grafo
 		\caption{Código fuente de ejemplo.\label{fig:code}}
 		\end{figure}
 
-%-----------------------------------------------------------------------------------
-	\subsection{Referencias}
-%-----------------------------------------------------------------------------------
-  	Las referencias deben estar agrupadas en una sección al final del artículo,
-  	y las citas numeradas correctamente, por ejemplo \cite{knuth} o \cite{goedel}.
-  	Incluya toda la información importante de cada referencia, incluídos autor,
-  	título, y notas de la edición. En caso de citar sitios web, además
-  	de la URL, incluya la fecha en que fue consultado, como en \cite{wiki}. Numere 
-  	las referencias según el orden en que se les cita.
-
-%===================================================================================
-
 
 
 %===================================================================================
@@ -314,8 +302,8 @@ Por esto nos propusimos utilizar las mejores implementaciones de dibujo de grafo
 %-----------------------------------------------------------------------------------
 \section{Recomendaciones}\label{sec:rec}
 
-  En esta sección puede incluir recomendaciones sobre posibles formas de continuar
-  la investigación u otros temas relacionados.
+Para mejorar este proyecto y que resulte aún más útil se recomienda representar en un solo grafo las conexiones contemporáneas y las conexiones causales, lo cual no pudimos llevar a cabo porque esto necesita tener un grafo con aristas dirigidas y no dirigidas al mismo tiempo, lo que nos imposibilitaría explotar las bondades de librerías como gravis \cite{gv} que hizo todo el proceso de distribuir el grafo en el espacio bidimensional. Por lo que esta mejora llevaría un gran trabajo. \\
+Igualmente en los gráficos en tres dimensiones, los cuales se organizan para tener forma cerebral, una mejora visual sería que curvear las aristas de forma que simule mejor la forma del cerebro y añadir una imagen del cerebro debajo para que se vea realmente que zona de este representa cada nodo.
 
 %===================================================================================
 
