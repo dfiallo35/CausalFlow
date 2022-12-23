@@ -140,8 +140,8 @@ Lic. Ania , \emph{MatCom}}
 \begin{abstract}
 
 El presente proyecto se encarga de resolver un problema práctico para matemáticos que realizan estudios sobre el cerebro humano. Es una herramienta creada específicamente para facilitar la visualización de modelaciones del cerebro y sus conexiones a partir de grafos causales. Para esto a partir de modelaciones en matrices previamente realizadas se contruyen grafos con ayuda de la librería gravis y se visualizan cómodamente en una interfaz visual web.\\
-Para más información sobre la interfaz visual del proyecto ver el manual de usuario en: $\href{https://github.com/dionisio35/graph_plotting/tree/main/user manual}{https://github.com/dionisio35/graph_plotting/tree/main/user manual}$\\
-Para acceder al código fuente del proyecto ir a: $\href{https://github.com/dionisio35/graph_plotting}{https://github.com/dionisio35/graph_plotting}$
+Para más información sobre la interfaz visual del proyecto ver el manual de usuario en: $\href{https://github.com/dionisio35/graph_plotting/tree/main/user manual}{link}$\\
+Para acceder al código fuente del proyecto ir a: $\href{https://github.com/dionisio35/graph_plotting}{link}$
 
 
 \end{abstract}
@@ -155,8 +155,8 @@ Para acceder al código fuente del proyecto ir a: $\href{https://github.com/dion
 
 This project is responsible for solving a practical problem for mathematicians who carry out studies on the human brain. It is a tool created specifically to facilitate the visualization of models of the brain and its connections from causal graphs. For this, based on matrix modeling previously carried out, graphs are built with the help of the gravis library and are conveniently displayed in a visual web interface.
 \\
-For more information about the visual interface of the project, see the user manual at: $\href{https://github.com/dionisio35/graph_plotting/tree/main/user manual}{https://github.com/dionisio35/graph_plotting/tree/main/user manual}$\\
-To access the source code of the project go to:  $\href{https://github.com/dionisio35/graph_plotting}{https://github.com/dionisio35/graph_plotting}$
+For more information about the visual interface of the project, see the user manual at: $\href{https://github.com/dionisio35/graph_plotting/tree/main/user manual}{link}$\\
+To access the source code of the project go to:  $\href{https://github.com/dionisio35/graph_plotting}{link}$
 \end{enabstract}
 
 %-----------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ To access the source code of the project go to:  $\href{https://github.com/dioni
 	librerías,
 	módulos,
 	conexiones causales,
-	conexiones contemporáneas
+	conexiones contemporáneas,
 	python
 \end{keywords}
 
@@ -195,7 +195,7 @@ To access the source code of the project go to:  $\href{https://github.com/dioni
 \section*{Introducción}\label{sec:intro}
 %-----------------------------------------------------------------------------------
 
-Se necesita para investigaciones en el Centro de Neurociencias de Cuba una aplicación que ayude a los investigadore a representar en forma de grafo las de conexiones causales y contemporánea que ocurren en el cerebro humano para esto nos proponemos hacer un programa al cual se le pasen dos tensores de conectividad y una lista con los nombres de los nodos y con estos datos construir un grafo que admita las 360 conexiones necesitadas y además se vea de la mejor manera posible para apoyar su estudio y análisis.\\
+Se necesita para investigaciones en el Centro de Neurociencias de Cuba una aplicación que ayude a los investigadores a representar en forma de grafo las de conexiones causales y contemporánea que ocurren en el cerebro humano para esto nos proponemos hacer un programa al cual se le pasen dos tensores de conectividad y una lista con los nombres de los nodos y con estos datos construir un grafo que admita las 360 conexiones necesitadas y además se vea de la mejor manera posible para apoyar su estudio y análisis.\\
 
 El proceso de contrucción de grafo causales se realiza a partir de dos tensores de 360x360xlags, siendo uno binario indicando si hubo conexión o no, y otro de pesos indicando la fuerza de las conexiones. Estos se construyen de la siguiente manera:
 
@@ -253,7 +253,7 @@ y como su nombre indica, está destinado a la creación de grafos interactivos e
 Usa tecnologías como \texttt{HTML}, \texttt{CSS} y \texttt{JS} para representar los grafos, apoyándose en gran medida de
 módulos como \texttt{d3.js}, \texttt{vis.js} y \texttt{three.js}( las representaciones visuales basadas en estos módulos
 se presentan en el proyecto como \texttt{Graph}, \texttt{Complex Graph} y \texttt{3D Graph} respectivamente).
-Para mostrar los resultados se usa en la interfáz visual se usa el módulo streamlit \cite{st}, tomando la información proporcionada por gravis como HTML.\\
+Para mostrar los resultados se usa en la interfaz visual se usa el módulo streamlit \cite{st}, tomando la información proporcionada por gravis como HTML.\\
 
 Para la representación de los grafos en el proyecto se usa el mismo formato que se usa en \texttt{gravis}, gravis JSON Graph Format(\texttt{gJGF}),
 el cual se define como \texttt{dict} en Python generándose como se muestra a continuación:
@@ -311,12 +311,7 @@ de los resultados, además de logar optimizar en tiempo de ejecución y procesam
 
 En las investigaciones para la realización de este proyecto pudimos adentrarnos en todo lo que es la representación de grafos en python y las mejores formas de visualización que se han implementado en este lenguaje. Las formas interactivas de graficación son bastante mejores y ofrecen una mejor visualización que las diferentes formas de distribución fija de nodos que se hacen hoy en día.\\
 
-
-
-%===================================================================================
-
-
-
+Por esto con la utilización de módulos de python que representan grafos de forma interactiva en el espacio bidimensional se logra bastante bien el objetivo de este proyecto de visualizar con comodidad grafos causales y esperamos sea una herramienta de mucha utilidad para las investigaciones que se apoyen en él.
 %===================================================================================
 % Recomendaciones
 %-----------------------------------------------------------------------------------
