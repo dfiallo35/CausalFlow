@@ -21,7 +21,6 @@ data_dir= realpath(join(dirname(__file__), 'data'))
 #todo: agregar about en sidebar
 #todo: investigar sobre la representacion con forma de cerebro
 
-
 def load_json(file:str):
     '''
     Load json file
