@@ -139,7 +139,9 @@ Lic. Ania , \emph{MatCom}}
 %-----------------------------------------------------------------------------------
 \begin{abstract}
 
-	Se necesita para investigaciones en el Centro de Neurociencias de Cuba una aplicación que ayude a los investigadore a representar en forma de grafo las de conexiones causales en el cerebro humano Hacer un programa al cual se le pasen dos tensores de conectividad y una lista con los nombres de los nodos y construir un grafo como se explicó anteriormente que admita las 360 necesarias y se puedan ver correctamente los nodo, las conexiones y la fuerza de estas.
+El presente proyecto se encarga de resolver un problema práctico para matemáticos que realizan estudios sobre el cerebro humano. Es una herramienta creada específicamente para facilitar la visualización de modelaciones del cerebro y sus conexiones a partir de grafos causales. Para esto a partir de modelaciones en matrices previamente realizadas se contruyen grafos con ayuda de la librería gravis y se visualizan cómodamente en una interfaz visual web.\\
+Para más información sobre la interfaz visual del proyecto ver el manual de usuario en: $\href{https://github.com/dionisio35/graph_plotting/tree/main/user manual}{https://github.com/dionisio35/graph_plotting/tree/main/user manual}$\\
+Para acceder al código fuente del proyecto ir a: $\href{https://github.com/dionisio35/graph_plotting}{https://github.com/dionisio35/graph_plotting}$
 
 
 \end{abstract}
@@ -147,13 +149,14 @@ Lic. Ania , \emph{MatCom}}
 %-----------------------------------------------------------------------------------
 % English Abstract
 %-----------------------------------------------------------------------------------
-\vspace{0.5cm}
+\vspace{0.9cm}
 
 \begin{enabstract}
 
-  The English abstract must have have $100$ to $200$ words, and present 
-  the essentials of the article content in a clear and concise form.
-
+This project is responsible for solving a practical problem for mathematicians who carry out studies on the human brain. It is a tool created specifically to facilitate the visualization of models of the brain and its connections from causal graphs. For this, based on matrix modeling previously carried out, graphs are built with the help of the gravis library and are conveniently displayed in a visual web interface.
+\\
+For more information about the visual interface of the project, see the user manual at: $\href{https://github.com/dionisio35/graph_plotting/tree/main/user manual}{https://github.com/dionisio35/graph_plotting/tree/main/user manual}$\\
+To access the source code of the project go to:  $\href{https://github.com/dionisio35/graph_plotting}{https://github.com/dionisio35/graph_plotting}$
 \end{enabstract}
 
 %-----------------------------------------------------------------------------------
@@ -162,6 +165,9 @@ Lic. Ania , \emph{MatCom}}
 \begin{keywords}
 	grafos causales,
 	librerías,
+	módulos,
+	conexiones causales,
+	conexiones contemporáneas
 	python
 \end{keywords}
 
@@ -176,7 +182,7 @@ Lic. Ania , \emph{MatCom}}
 %-----------------------------------------------------------------------------------
 % NO BORRAR ESTAS LINEAS!
 %-----------------------------------------------------------------------------------
-\vspace{0.8cm}
+\vspace{1.8cm}
 ]
 %-----------------------------------------------------------------------------------
 
@@ -186,7 +192,7 @@ Lic. Ania , \emph{MatCom}}
 %===================================================================================
 % Introducción
 %-----------------------------------------------------------------------------------
-\section{Introducción}\label{sec:intro}
+\section*{Introducción}\label{sec:intro}
 %-----------------------------------------------------------------------------------
 
 Se necesita para investigaciones en el Centro de Neurociencias de Cuba una aplicación que ayude a los investigadore a representar en forma de grafo las de conexiones causales y contemporánea que ocurren en el cerebro humano para esto nos proponemos hacer un programa al cual se le pasen dos tensores de conectividad y una lista con los nombres de los nodos y con estos datos construir un grafo que admita las 360 conexiones necesitadas y además se vea de la mejor manera posible para apoyar su estudio y análisis.\\
@@ -229,30 +235,25 @@ También otro problema que presenta el usuario es que guarda cada uno de los par
 
 \section*{Primeras ideas}
 
-Al comienzo de la realización de este proyecto se tenía en mente la implementación de métodos para dibujar grafos que lograran una buena ditribución de nodos y aristas en el espacio bidimensional utilizando los conocimientos adquiridos en asignaturas como Matemática Discreta II, Estructura de Datos y Algoritmos II y Modelos de Optimización, esto dibujando el grafo en su forma maximal planar y luego ir añadiendo las aristas que falten por dibujarse  minimizando la cantidad de aristas que serían dibujadas cortando a las que ya estuvieran colocadas. \\
+Al comienzo de la realización de este proyecto se tenía en mente la implementación de métodos para visualizar grafos que lograran una buena ditribución de nodos y aristas en el espacio bidimensional utilizando los conocimientos adquiridos en asignaturas como Matemática Discreta II, Estructura de Datos y Algoritmos II y Modelos de Optimización, esto dibujando el grafo en su forma maximal planar y luego ir añadiendo las aristas que falten por dibujarse  minimizando la cantidad de aristas que serían dibujadas cortando a las que ya estuvieran colocadas. \\
 
 Esto tuvo grandes inconvenientes porque los grafo causales, sobre todo el de conexiones contemporáneas, están muy lejos de ser planares, tienen muchas aristas y a la hora de acomodar los nodos y dibujar las aristas que no formaban parte del grafo maximal planar tomado como base no se podían garantizar distrubuciones de nodos y aristas que dieran lugar a la correcta observación del grafo.\\
 
-Buscando en el estado del arte no existía nada como esto, ninguna distribución que se hiciera a un grafo resultaba buena en todos los casos, para todo tipo de grafos, probamos con la librería networkx las diferentes distribuciones que esta tiene implementadas y ninguna de ellas cumplía nuestro objetivo, por lo que llegamos a la conclusión que crear un algoritmo que graficara cualquier grafo de la mejor manera poible para él es un ejercicio muy complicado por lo cual no se encontraba a nuestro alcance.\\
+Buscando en el estado del arte no existía nada como esto, ninguna distribución de nodos fija que se hiciera a un grafo resultaba buena en todos los casos, para todo tipo de grafos, probamos con la librería networkx las diferentes distribuciones que esta tiene implementadas y ninguna de ellas cumplía nuestro objetivo, por lo que llegamos a la conclusión que crear un algoritmo que graficara cualquier grafo de la mejor manera posible para él es un ejercicio muy complicado por lo cual no se encontraba a nuestro alcance por razones de tiempo y experiencia.\\
 
-Por esto nos propusimos utilizar las mejores implementaciones de dibujo de grafos que estuvieran disponibles en librerías de python para poder resolver el problema del usuario y lograr su satisfacción y comodidad.\\
-
-
+Por esto nos propusimos utilizar las mejores implementaciones de visualización de grafos que estuvieran disponibles en librerías de python para poder resolver el problema del usuario y lograr su satisfacción y comodidad.\\
 
 
 
+\section*{Solución}
 
-
-
-\section*{CODE}
 El proyecto se encuentra programado en su totalidad en Python. Para la graficación de los grafos causales
-se usa el módulo gravis; su nombre significa \texttt{graph visualization}, visualización de grafos,
+se usa el módulo gravis \cite{gv}; su nombre significa \texttt{graph visualization}, visualización de grafos,
 y como su nombre indica, está destinado a la creación de grafos interactivos en 2d y 3d.
 Usa tecnologías como \texttt{HTML}, \texttt{CSS} y \texttt{JS} para representar los grafos, apoyándose en gran medida de
 módulos como \texttt{d3.js}, \texttt{vis.js} y \texttt{three.js}( las representaciones visuales basadas en estos módulos
 se presentan en el proyecto como \texttt{Graph}, \texttt{Complex Graph} y \texttt{3D Graph} respectivamente).
-Para mostrar los resultados se usa en la interfáz visual se usa el módulo streamlit,
-tomando la información proporcionada por gravis como HTML.\\
+Para mostrar los resultados se usa en la interfáz visual se usa el módulo streamlit \cite{st}, tomando la información proporcionada por gravis como HTML.\\
 
 Para la representación de los grafos en el proyecto se usa el mismo formato que se usa en \texttt{gravis}, gravis JSON Graph Format(\texttt{gJGF}),
 el cual se define como \texttt{dict} en Python generándose como se muestra a continuación:
@@ -271,115 +272,46 @@ el cual se define como \texttt{dict} en Python generándose como se muestra a co
 
 Para la representación de los grafos se puede indicar desde el inicio las posiciones espaciales de cada nodo,
 como es el caso del \texttt{3D Graph} que presentamos con con ubicaciones reales a escala de las areas estimuladas del cerebro.
-Sin embargo en el resto de los casos se usan algoritmos apoyados en las físicas para representar los nodos.
+Sin embargo en el resto de los casos se usan algoritmos apoyados en las físicas para representar los nodos.\\
+
+\begin{figure}[h!]%
+\includegraphics[scale=0.1]{3d_graph.jpg}
+\caption{Ejemplo de representación de grafo en tres dimensiones con los nodos distribuídos según la forma del cerebro}
+\end{figure}
+
 Usando la opción de \texttt{Many-Body Force} existen distintos tipos de fuerzas e interacciones entre los nodos y las arista,
 las cuales se pueden modificar, entre ellas: \texttt{Links Force} la cual es la fuerza que ejercen las aristas sobre los nodos
-enlazados, \texttt{Collision Force} que es la fuerza de repulsión entre nodos, \texttt{Centering Force} esta atrae a los nodos hacia el centro de la gráfica,
-\texttt{x Force} y \texttt{y Force} que son las fuerzas que atraen a los nodos hacia el eje señalado.
-En el caso de las representaciones de \texttt{Complex Graph} además de estas físicas anteriores, tambien se permiten seleccionar distintos algoritmos para la representación,
-como es el caso del algoritmo de Barnes-Hut, este divide recursivamente los $n$ cuerpos en grupos almacenándolos en octábolos, mientras que el espacio
-se subdivide recursivamente en octantes hasta que cada subdivisión tenga $0$ o $1$ cuerpos.
-\\
+enlazados, \texttt{Collision Force} que es la fuerza de repulsión entre nodos, \texttt{Centering Force} esta atrae a los nodos hacia el centro de la gráfica, \texttt{x Force} y \texttt{y Force} que son las fuerzas que atraen a los nodos hacia el eje señalado.\\
+
+\begin{figure}[h!]%
+\includegraphics[scale=0.05]{graph_colorbar.jpg}
+\caption{Representación de un grafo que representa las conexiones contemporáneas y lass fuerzas de los enlaces con los colores de las aristas}
+\end{figure}
+
+
+\begin{figure}[h!]%
+\includegraphics[scale=0.1]{digraph_colorbar.jpg}
+\caption{Representación de un grafo dirigido que representa las conexiones causales}
+\end{figure}
+
+En el caso de las representaciones de \texttt{Complex Graph} además de estas físicas anteriores, tambien se permiten seleccionar distintos algoritmos para la representación, como es el caso del algoritmo de Barnes-Hut, este divide recursivamente los $n$ cuerpos en grupos almacenándolos en octábolos, mientras que el espacio se subdivide recursivamente en octantes hasta que cada subdivisión tenga $0$ o $1$ cuerpos.\\
+
+\begin{figure}[h!]%
+\includegraphics[scale=0.25]{complex.jpg}
+\caption{Ejemplo de representación de tipo Complex Graph}
+\end{figure}
 
 Aplicando estas representaciones con físicas se logra una graficación más factorizada, logrando facilitar al usuario las visualización
 de los resultados, además de logar optimizar en tiempo de ejecución y procesamiento, pues los algoritmos que se usan tienen una complejidad temporal máxima de $O(n\log{n})$.\\
-
-
-
-
-\section*{Solución}
-
-
-
-
-
-
-
-
-
-
-
-
-
-%===================================================================================
-
-
-
-%-----------------------------------------------------------------------------------
-	\subsection{Listas y Descripciones}\label{sub:lists}
-%-----------------------------------------------------------------------------------
-		Para producir listas enumeradas, utilice el siguiente estilo:
-		\begin{enumerate}
-			\item Primer Elemento
-			\item Segundo Elemento
-			%
-			\begin {enumerate}
-				\item {Segundo Elemento - Subítem Uno}
-				\item {Segundo Elemento - Subítem Dos}
-			\end {enumerate}
-			%
-		\end{enumerate}
-
-%-----------------------------------------------------------------------------------
-		Para producir descripciones, use el siguiente estilo:
-
-%-----------------------------------------------------------------------------------
-		\begin{description}
-			\item [Primer Elemento] con su respectiva descripción.
-			\item [Segundo Elemento] también con su respectiva descripción.
-		\end{description}
-
-%-----------------------------------------------------------------------------------
-	\subsection{Figuras}\label{sub:figures}
-%-----------------------------------------------------------------------------------
-		Para producir cuerpos flotantes (figuras o tablas), asegúrese de numerar
-		y etiquetar correctamente cada figura. Las referencias a las figuras deben
-		estar correctamente etiquetadas. Por ejemplo, véase la Fig. \ref{fig:ex}\ldots
-
-		\begin{figure}[h!]%
-		\begin{center}
-			\begin{tabular}{|c|c|c|} \hline
-			 			& Método 1 	& Método 2 	\\ \hline
-			A 			&  			&  			\\ \hline
-			B			& 			& 			\\ \hline
-			C 			& 			&  			\\ \hline
-			\end{tabular}
-		\caption{Figura de ejemplo. Recuerde especificar el origen de los datos que se muestran. \label{fig:ex}}
-		\end{center}
-		\end{figure}
-
-%-----------------------------------------------------------------------------------
-	\subsection{Código Fuente}\label{sub:listings}
-%-----------------------------------------------------------------------------------
-		Para producir código fuente, envuélvalo en una figura flotante y
-		etiquételo correctamente. Por ejemplo, en la Fig. \ref{fig:code}
-		se muestra un código bastante conocido\ldots
-
-		% Configuración de Listings
-		\lstset{keywordstyle=\color{blue}, basicstyle=\small}
-
-		\begin{figure}[htb]%
-			\begin{lstlisting}[language=c]%
-
-    int main(int argc, char** argv)
-    {
-        // Imprimiendo "Hola Mundo".
-        printf("Hello, World");
-    }
-
-			\end{lstlisting}
-		\caption{Código fuente de ejemplo.\label{fig:code}}
-		\end{figure}
-
-
 
 %===================================================================================
 % Conclusiones
 %-----------------------------------------------------------------------------------
 \section{Conclusiones}\label{sec:conc}
 
-  En esta sección puede incluir las conclusiones de su investigación y las ideas
-  sobre la continuidad del trabajo, en el caso que aplique.
+En las investigaciones para la realización de este proyecto pudimos adentrarnos en todo lo que es la representación de grafos en python y las mejores formas de visualización que se han implementado en este lenguaje. Las formas interactivas de graficación son bastante mejores y ofrecen una mejor visualización que las diferentes formas de distribución fija de nodos que se hacen hoy en día.\\
+
+
 
 %===================================================================================
 
@@ -391,6 +323,7 @@ de los resultados, además de logar optimizar en tiempo de ejecución y procesam
 \section{Recomendaciones}\label{sec:rec}
 
 Para mejorar este proyecto y que resulte aún más útil se recomienda representar en un solo grafo las conexiones contemporáneas y las conexiones causales, lo cual no pudimos llevar a cabo porque esto necesita tener un grafo con aristas dirigidas y no dirigidas al mismo tiempo, lo que nos imposibilitaría explotar las bondades de librerías como gravis \cite{gv} que hizo todo el proceso de distribuir el grafo en el espacio bidimensional. Por lo que esta mejora llevaría un gran trabajo. \\
+
 Igualmente en los gráficos en tres dimensiones, los cuales se organizan para tener forma cerebral, una mejora visual sería que curvear las aristas de forma que simule mejor la forma del cerebro y añadir una imagen del cerebro debajo para que se vea realmente que zona de este representa cada nodo.
 
 %===================================================================================
@@ -410,18 +343,13 @@ Igualmente en los gráficos en tres dimensiones, los cuales se organizan para te
 
 	\bibitem{st}Documentación de la librería de python streamlit \href{https://docs.streamlit.io}{https://docs.streamlit.io}.
 
-%	\bibitem{goedel} Kurt Göedel. \emph{Über formal unentscheidbare Sätze der
-%		Principia Mathematica und verwandter Systeme, I}.
-%		Monatshefte für Mathematik und Physik 38.
 
-%	\bibitem{wiki} Wikipedia. URL: \href{http://en.wikipedia.org}
-%	  {http://en.wikipedia.org}.
-%		Consultado en \today.
 
 %-----------------------------------------------------------------------------------
 \end{thebibliography}
 
 %-----------------------------------------------------------------------------------
+
 
 \label{end}
 
