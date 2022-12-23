@@ -1,10 +1,10 @@
 # Fdb version 3
-["biber user_manual"] 1671776221 "user_manual.bcf" "user_manual.bbl" "user_manual" 1671776231
-  "user_manual.bcf" 1671776230 106623 0f11a34ce9999da12ff79eacc636811e "pdflatex"
+["biber user_manual"] 1671776221 "user_manual.bcf" "user_manual.bbl" "user_manual" 1671776345
+  "user_manual.bcf" 1671776345 106623 0f11a34ce9999da12ff79eacc636811e "pdflatex"
   (generated)
   "user_manual.bbl"
   "user_manual.blg"
-["pdflatex"] 1671776228 "c:/Users/dfial/Documents/GitHub/graph_plotting/user manual/user_manual.tex" "user_manual.pdf" "user_manual" 1671776231
+["pdflatex"] 1671776343 "c:/Users/dfial/Documents/GitHub/graph_plotting/user manual/user_manual.tex" "user_manual.pdf" "user_manual" 1671776345
   "C:/Program Files/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458470287 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
   "C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc" 1254935040 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
   "C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc" 1254935040 2327 9d6df24f9c4f7368395224341a95523a ""
@@ -206,11 +206,11 @@
   "C:/Program Files/MiKTeX/tex/latex/xcolor/xcolor.sty" 1636284872 56029 3f7889dab51d620aa43177c391b7b190 ""
   "C:/ProgramData/MiKTeX/fonts/map/pdftex/pdftex.map" 1671597432 81888 770f3d4559840b9e9d8f989d2d293e5e ""
   "C:/Users/dfial/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1656075239 10237146 dc4d1e2262e6ebfe94f288028ebe5ae4 ""
-  "c:/Users/dfial/Documents/GitHub/graph_plotting/user manual/user_manual.tex" 1671776215 6912 ed469e2be19321d8985ee7ec4cef4dcd ""
-  "user_manual.aux" 1671776230 303 afa48fda1a2853b1dbd1ffb1c7c4e756 "pdflatex"
+  "c:/Users/dfial/Documents/GitHub/graph_plotting/user manual/user_manual.tex" 1671776340 6914 b6e161e7ac5cc8fb25272f826f09e3ee ""
+  "user_manual.aux" 1671776345 303 afa48fda1a2853b1dbd1ffb1c7c4e756 "pdflatex"
   "user_manual.bbl" 1671776226 486 ee04f40f768daeed26442158e95aba61 "biber user_manual"
-  "user_manual.run.xml" 1671776230 2355 dc901fea5dfb29bf4263b3a346ffa635 "pdflatex"
-  "user_manual.tex" 1671776215 6912 ed469e2be19321d8985ee7ec4cef4dcd ""
+  "user_manual.run.xml" 1671776345 2355 dc901fea5dfb29bf4263b3a346ffa635 "pdflatex"
+  "user_manual.tex" 1671776340 6914 b6e161e7ac5cc8fb25272f826f09e3ee ""
   "visual.png" 1671684412 68588 ae9095cf5a55d72be00a9da6b5becaaf ""
   (generated)
   "user_manual.aux"
