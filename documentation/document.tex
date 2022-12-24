@@ -195,17 +195,30 @@ To access the source code of the project go to:  $\href{https://github.com/dioni
 \section*{Introducción}\label{sec:intro}
 %-----------------------------------------------------------------------------------
 
-Se necesita para investigaciones en el Centro de Neurociencias de Cuba una aplicación que ayude a los investigadores a representar en forma de grafo las de conexiones causales y contemporánea que ocurren en el cerebro humano para esto nos proponemos hacer un programa al cual se le pasen dos tensores de conectividad y una lista con los nombres de los nodos y con estos datos construir un grafo que admita las 360 conexiones necesitadas y además se vea de la mejor manera posible para apoyar su estudio y análisis.\\
+Se necesita para investigaciones en el Centro de Neurociencias de Cuba una aplicación que ayude
+a los investigadores a representar en forma de grafo las conexiones causales y contemporáneas
+que ocurren en el cerebro humano para esto nos proponemos hacer un programa al cual se le pasen
+dos tensores de conectividad y una lista con los nombres de los nodos y con estos datos construir
+un grafo que admita las 360 conexiones necesitadas y además se vea de la mejor manera posible
+para apoyar su estudio y análisis.\\
 
-El proceso de contrucción de grafo causales se realiza a partir de dos tensores de 360x360xlags, siendo uno binario indicando si hubo conexión o no, y otro de pesos indicando la fuerza de las conexiones. Estos se construyen de la siguiente manera:
+El proceso de contrucción de grafo causales se realiza a partir de dos tensores de 360x360xlags,
+siendo uno binario indicando si hubo conexión o no, y otro de pesos indicando la fuerza de las
+conexiones. Estos se construyen de la siguiente manera:
 
 \begin{description}
 
 
-\item	Conexiones contemporáneas: Se representan con una línea recta. Se toma el lag 0(único lag simétrico) y donde aparezca 1 significa que hay conexión entre los nodos (i, j), mientras que el color de la conexión que se traza viene dado por el valor de la matriz de peso en la posición (i, j).\\
+\item	Conexiones contemporáneas: Se representan con una línea recta. Se toma el lag 0
+(único lag simétrico) y donde aparezca 1 significa que hay conexión entre los nodos (i, j),
+mientras que el color de la conexión que se traza viene dado por el valor de la matriz de peso
+en la posición (i, j).\\
 
-\item	Lagged connections o causalidad: Se representan con flechas. Para el resto de lags se busca igualmente si hay un 1 en el tensor binario de 
-lag$\neq $0 y se construye una flecha del nodo i al j con la intensidad dada por el promedio de los valores de la matriz de pesos en los lags donde hubo conexión, además de especificar los lags con conexión.\\
+\item	Lagged connections o causalidad: Se representan con flechas. Para el resto de lags se
+busca igualmente si hay un 1 en el tensor binario de 
+lag$\neq $0 y se construye una flecha del nodo i al j con la intensidad dada por el promedio
+de los valores de la matriz de pesos en los lags donde hubo conexión, además de especificar
+los lags con conexión.\\
 
 \end{description}
 
@@ -213,13 +226,16 @@ lag$\neq $0 y se construye una flecha del nodo i al j con la intensidad dada por
 \center
 \includegraphics[scale=0.95]{example1.png}
 \includegraphics[scale=0.45]{example.png}
-\caption{Ejemplo de graficación de grafos causales que se pueden ver con precisión}
+\caption{Ejemplo de graficación de grafos causales que se pueden ver con precisión.}
 \end{figure}
 
 \newpage
 
 
-Las aplicaciones con las que cuenta el usuario al pasarle un gráfico de más de 180 series de tiempo(en la práctica se necesitan 360), el programa pone 180 nodos sobre una circunferencia y los restantes los sobrepone a estos en la misma circunferencia, haciendo que no sea posible ver las conexiones.\\
+Las aplicaciones con las que cuenta el usuario al pasarle un gráfico de más de 180 series
+de tiempo(en la práctica se necesitan 360), el programa pone 180 nodos sobre una circunferencia
+y los restantes los sobrepone a estos en la misma circunferencia, haciendo que no sea posible
+ver las conexiones.\\
 
 
 \begin{figure}[h!]%
@@ -251,12 +267,12 @@ El proyecto se encuentra programado en su totalidad en Python. Para la graficaci
 se usa el módulo gravis \cite{gv}; su nombre significa \texttt{graph visualization}, visualización de grafos,
 y como su nombre indica, está destinado a la creación de grafos interactivos en 2d y 3d.
 Usa tecnologías como \texttt{HTML}, \texttt{CSS} y \texttt{JS} para representar los grafos, apoyándose en gran medida de
-módulos como \texttt{d3.js}, \texttt{vis.js} y \texttt{three.js}( las representaciones visuales basadas en estos módulos
+módulos como \texttt{d3.js}, \texttt{vis.js} y \texttt{three.js}(las representaciones visuales basadas en estos módulos
 se presentan en el proyecto como \texttt{Graph}, \texttt{Complex Graph} y \texttt{3D Graph} respectivamente).
-Para mostrar los resultados se usa en la interfaz visual se usa el módulo streamlit \cite{st}, tomando la información proporcionada por gravis como HTML.\\
+Para mostrar los resultados se usa en la interfaz visual el módulo streamlit \cite{st}, tomando la información proporcionada por gravis como HTML.\\
 
 Para la representación de los grafos en el proyecto se usa el mismo formato que se usa en \texttt{gravis}, gravis JSON Graph Format(\texttt{gJGF}),
-el cual se define como \texttt{dict} en Python generándose como se muestra a continuación:
+el cual se define como diccionario en Python generándose como se muestra a continuación:
 
 \begin{lstlisting}[language=json,firstnumber=1]
 {
@@ -281,7 +297,7 @@ Sin embargo en el resto de los casos se usan algoritmos apoyados en las físicas
 
 Usando la opción de \texttt{Many-Body Force} existen distintos tipos de fuerzas e interacciones entre los nodos y las arista,
 las cuales se pueden modificar, entre ellas: \texttt{Links Force} la cual es la fuerza que ejercen las aristas sobre los nodos
-enlazados, \texttt{Collision Force} que es la fuerza de repulsión entre nodos, \texttt{Centering Force} esta atrae a los nodos hacia el centro de la gráfica, \texttt{x Force} y \texttt{y Force} que son las fuerzas que atraen a los nodos hacia el eje señalado.\\
+enlazados, \texttt{Collision Force} que es la fuerza de repulsión entre nodos, \texttt{Centering Force} esta atrae a los nodos hacia el centro de la gráfica, \texttt{Y Force} y \texttt{X Force} que son las fuerzas que atraen a los nodos hacia el eje señalado.\\
 
 \begin{figure}[h!]%
 \includegraphics[scale=0.05]{graph_colorbar.jpg}
@@ -296,13 +312,15 @@ enlazados, \texttt{Collision Force} que es la fuerza de repulsión entre nodos, 
 
 En el caso de las representaciones de \texttt{Complex Graph} además de estas físicas anteriores, tambien se permiten seleccionar distintos algoritmos para la representación, como es el caso del algoritmo de Barnes-Hut, este divide recursivamente los $n$ cuerpos en grupos almacenándolos en octábolos, mientras que el espacio se subdivide recursivamente en octantes hasta que cada subdivisión tenga $0$ o $1$ cuerpos.\\
 
+
+
+Aplicando estas representaciones con físicas se logra una graficación más factorizada, logrando facilitar al usuario las visualización
+de los resultados, además de logar optimizar en tiempo de ejecución y procesamiento, pues los algoritmos que se usan tienen una complejidad temporal máxima de $O(n\log{n})$.\\
+
 \begin{figure}[h!]%
 \includegraphics[scale=0.25]{complex.jpg}
 \caption{Ejemplo de representación de tipo Complex Graph}
 \end{figure}
-
-Aplicando estas representaciones con físicas se logra una graficación más factorizada, logrando facilitar al usuario las visualización
-de los resultados, además de logar optimizar en tiempo de ejecución y procesamiento, pues los algoritmos que se usan tienen una complejidad temporal máxima de $O(n\log{n})$.\\
 
 %===================================================================================
 % Conclusiones
