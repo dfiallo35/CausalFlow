@@ -5,7 +5,7 @@ To run the code, you must first install the python dependencies found in require
 
 
 
-<!-- ### Website
+<!-- ### Website -->
 
- You can access the project website at [Link](https://causal-graphs.streamlit.app).
+<!-- You can access the project website at [Link](https://causal-graphs.streamlit.app).
 In case of living in a blocked country, it is necessary to use a VPN :disappointed_relieved: -->
