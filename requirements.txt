@@ -2,7 +2,7 @@ gravis>=0.1.0
 networkx>=2.8.7
 scipy>=1.8.0
 streamlit>=1.15.1
-geemap>=0.19.0
-Pillow>=9.1.0
-opencv-python>=4.5.5.64
 numpy>=1.21.5
+graphviz
+pyvis
+matplotlib

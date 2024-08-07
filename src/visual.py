@@ -1,4 +1,10 @@
+import streamlit as st
+import gravis as gv
+
+import streamlit.components.v1 as components
+
 from plot_methods import *
+
 st.set_page_config(
         page_title="Causal graphs",
         initial_sidebar_state="expanded",
@@ -16,7 +22,6 @@ class Visual():
 
         if self.file:
             self.generate_graphs()
-            self.make_colorbar_graph()
 
             if self.graph_type == 'Graph':
                 st.markdown('### Entire Graph')
@@ -91,13 +96,11 @@ class Visual():
                 
         with tab2:
             if self.file:
-                a=1
                 self.rename_file= st.file_uploader('Select the Rename File', type=['json'])
             else:
                 st.error('Input the Graph')
         with tab3:
             if self.file:
-                a=1
                 self.pos3d_file= st.file_uploader('Select the 3D Positions File', type=['json'])
             else:
                 st.error('Input the Graph')

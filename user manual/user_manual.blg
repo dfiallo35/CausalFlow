@@ -1,9 +1,0 @@
-[0] Config.pm:307> INFO - This is Biber 2.17
-[0] Config.pm:310> INFO - Logfile is 'user_manual.blg'
-[167] biber-MSWIN64:340> INFO - === 
-[224] Biber.pm:418> INFO - Reading 'user_manual.bcf'
-[369] Biber.pm:972> INFO - Found 0 citekeys in bib section 0
-[390] bbl.pm:654> INFO - Writing 'user_manual.bbl' with encoding 'UTF-8'
-[391] bbl.pm:757> INFO - Output to user_manual.bbl
-[391] Biber.pm:130> WARN - The file 'user_manual.bcf' does not contain any citations!
-[391] Biber.pm:132> INFO - WARNINGS: 1

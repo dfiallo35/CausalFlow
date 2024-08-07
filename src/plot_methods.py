@@ -1,25 +1,11 @@
-from scipy.io import loadmat
-
-import gravis as gv
-
-import streamlit as st
-import streamlit.components.v1 as components
-
 import json
 from os import path
+from os.path import join
 
-from geemap import save_colorbar
-import geemap.colormaps as cm
-import cv2
-from os.path import realpath, join, dirname
-from PIL import Image
+from scipy.io import loadmat
 
-import numpy
+data_dir= path.realpath(join(path.dirname(__file__), 'data'))
 
-data_dir= realpath(join(dirname(__file__), 'data'))
-
-#todo: agregar about en sidebar
-#todo: investigar sobre la representacion con forma de cerebro
 
 def load_json(file:str):
     '''
@@ -27,7 +13,7 @@ def load_json(file:str):
     :param file: path to json file
     :return: dict
     '''
-    data :dict() = json.load(open(file))
+    data :dict = json.load(open(file))
     return data
 
 def load_json_file(file:str):
@@ -36,7 +22,7 @@ def load_json_file(file:str):
     :param file: path to json file
     :return: dict
     '''
-    data :dict() = json.load(file)
+    data :dict = json.load(file)
     return data
 
 def load_mat(file:str):
@@ -360,6 +346,11 @@ def add_colorbar(color_list: list):
     Add a colorbar to the graph
     :param colors: List of colors
     '''
+    from geemap import save_colorbar
+    import geemap.colormaps as cm
+    import cv2
+    import numpy
+
     colorbar_dir= realpath(join(data_dir, 'colorbar.png'))
     graph_dir= realpath(join(data_dir, 'graph.png'))
 

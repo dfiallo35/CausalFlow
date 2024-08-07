@@ -1,18 +1,12 @@
-from plot_methods import *
-# pyvis
+from graphviz import Graph
 from pyvis.network import Network
-
-# graphviz
-import graphviz
-
-# matplotlib
 import matplotlib.pyplot as plt
+import streamlit as st
+import networkx as nx
 
-# os
-from os import getcwd
-from os.path import join
+import streamlit.components.v1 as components
 
-import numpy as np
+from plot_methods import *
 
 
 def pyvis_graph(self):
@@ -86,7 +80,7 @@ def graphviz_plott(self):
     with st.expander("See explanation"):
         #plot with graphviz
         # Create a graphlib graph object
-        graph = graphviz.Graph()
+        graph = Graph()
         graph.attr('node', shape='circle')
         graph.attr('node', style='filled')
         graph.attr('node', fillcolor='lightblue2')
